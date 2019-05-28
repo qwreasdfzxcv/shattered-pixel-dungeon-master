@@ -181,7 +181,7 @@ public class TitleScene extends PixelScene {
 		add( btnLang );
 
 		LoginButton btnLogin = new LoginButton();
-		btnLogin.setRect(pos, 0, 18, 16);
+		btnLogin.setRect(pos, 0, 22, 16);
 		add( btnLogin );
 
 		ExitButton btnExit = new ExitButton();
