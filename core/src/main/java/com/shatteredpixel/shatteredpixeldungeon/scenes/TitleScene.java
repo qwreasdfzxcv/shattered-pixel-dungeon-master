@@ -180,8 +180,10 @@ public class TitleScene extends PixelScene {
 		btnLang.setRect(pos, 0, 14, 16);
 		add( btnLang );
 
+		pos += btnLang.width();
+
 		LoginButton btnLogin = new LoginButton();
-		btnLogin.setRect(pos, 0, 22, 16);
+		btnLogin.setRect(pos, 0, 18, 16);
 		add( btnLogin );
 
 		ExitButton btnExit = new ExitButton();
