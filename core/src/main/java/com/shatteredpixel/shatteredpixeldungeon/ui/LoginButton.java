@@ -1,8 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndLogin;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
@@ -43,5 +42,7 @@ public class LoginButton extends Button {
     protected void onTouchUp(){image.resetColor();}
 
     @Override
-    protected void onClick(){ ShatteredPixelDungeon.switchNoFade(ChangesScene.);}
+    protected void onClick(){
+        parent.add(new WndLogin());
+    }
 }
