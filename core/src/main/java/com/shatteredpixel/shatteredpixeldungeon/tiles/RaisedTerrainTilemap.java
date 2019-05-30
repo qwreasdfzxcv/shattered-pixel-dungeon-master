@@ -49,4 +49,9 @@ public class RaisedTerrainTilemap extends DungeonTilemap {
 		
 		return -1;
 	}
+	
+	@Override
+	protected boolean needsRender(int pos) {
+		return data[pos] != -1;
+	}
 }

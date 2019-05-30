@@ -21,15 +21,23 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoCounter;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pilgrim;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PilgrimPunish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -55,8 +63,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -68,6 +78,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 public class Armor extends EquipableItem {
 
@@ -96,10 +108,7 @@ public class Armor extends EquipableItem {
 	}
 	
 	public Augment augment = Augment.NONE;
-	
 	public Glyph glyph;
-	public boolean curseInfusionBonus = false;
-	
 	private BrokenSeal seal;
 	
 	public int tier;
@@ -115,7 +124,6 @@ public class Armor extends EquipableItem {
 	private static final String USES_LEFT_TO_ID = "uses_left_to_id";
 	private static final String AVAILABLE_USES  = "available_uses";
 	private static final String GLYPH			= "glyph";
-	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String SEAL            = "seal";
 	private static final String AUGMENT			= "augment";
 
@@ -125,7 +133,6 @@ public class Armor extends EquipableItem {
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( GLYPH, glyph );
-		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( SEAL, seal);
 		bundle.put( AUGMENT, augment);
 	}
@@ -136,7 +143,6 @@ public class Armor extends EquipableItem {
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
 		inscribe((Glyph) bundle.get(GLYPH));
-		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
 		
 		//pre-0.7.2 saves
@@ -145,7 +151,8 @@ public class Armor extends EquipableItem {
 			availableUsesToID = USES_TO_ID/2f;
 		}
 		
-		augment = bundle.getEnum(AUGMENT, Augment.class);
+		//pre-0.6.5 saves
+		if (bundle.contains(AUGMENT)) augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
 
 	@Override
@@ -344,15 +351,16 @@ public class Armor extends EquipableItem {
 		if (hasGlyph(Obfuscation.class, owner)){
 			stealth += 1 + level()/3f;
 		}
+
+		Pilgrim pilgrim = owner.buff(Pilgrim.class);
+		PilgrimPunish punish = owner.buff(PilgrimPunish.class);
+		if (pilgrim != null && punish == null){
+			stealth += pilgrim.stealthBonus();
+		}
 		
 		return stealth;
 	}
-	
-	@Override
-	public int level() {
-		return super.level() + (curseInfusionBonus ? 1 : 0);
-	}
-	
+
 	@Override
 	public Item upgrade() {
 		return upgrade( false );
@@ -387,6 +395,28 @@ public class Armor extends EquipableItem {
 				identify();
 				GLog.p( Messages.get(Armor.class, "identify") );
 				Badges.validateItemLevelAquired( this );
+			}
+		}
+
+		if (hero.subClass == HeroSubClass.BULWARK
+				&& this != null
+				&& checkSeal() != null
+				&& hero.shielding() > 0
+				&& hero.buff(Paralysis.class) == null
+				&& hero.buff(Frost.class) == null
+				&& attacker.buff(NoCounter.class) == null) {
+            int counter = (hero.shielding() - damage);
+            if (!(counter <= 0)) {
+				hero.sprite.zap( attacker.pos );
+				hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(hero, "def_bulwark"));
+				Buff.affect(attacker, NoCounter.class);
+				if (counter > attacker.HP) {
+					if (attacker instanceof Bat && hero.belongings.weapon instanceof Pickaxe) {
+						hero.attackProc(attacker, counter);
+					} else attacker.die(hero);
+				} else {
+					attacker.damage(counter, this);
+				}
 			}
 		}
 		
@@ -521,7 +551,6 @@ public class Armor extends EquipableItem {
 	}
 
 	public Armor inscribe( Glyph glyph ) {
-		if (glyph == null || !glyph.curse()) curseInfusionBonus = false;
 		this.glyph = glyph;
 		updateQuickslot();
 		return this;
@@ -577,7 +606,7 @@ public class Armor extends EquipableItem {
 		};
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
-		
+
 		public String name() {
 			if (!curse())
 				return name( Messages.get(this, "glyph") );

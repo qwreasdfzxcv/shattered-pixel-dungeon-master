@@ -69,7 +69,7 @@ public class WndLangs extends Window {
 				protected void onClick() {
 					super.onClick();
 					Messages.setup(langs.get(langIndex));
-					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+					ShatteredPixelDungeon.switchNoFade(TitleScene.class, new Game.SceneChangeCallback() {
 						@Override
 						public void beforeCreate() {
 							SPDSettings.language(langs.get(langIndex));
@@ -77,7 +77,7 @@ public class WndLangs extends Window {
 						}
 						@Override
 						public void afterCreate() {
-							//do nothing
+							Game.scene().add(new WndLangs());
 						}
 					});
 				}

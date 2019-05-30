@@ -106,23 +106,23 @@ public class CursedWand {
 			//anti-entropy
 			case 0:
 				cursedFX(user, bolt, new Callback() {
-						public void call() {
-							Char target = Actor.findChar(bolt.collisionPos);
-							switch (Random.Int(2)){
-								case 0:
-									if (target != null)
-										Buff.affect(target, Burning.class).reignite(target);
-									Buff.affect(user, Frost.class, Frost.duration(user) * Random.Float(3f, 5f));
-									break;
-								case 1:
-									Buff.affect(user, Burning.class).reignite(user);
-									if (target != null)
-										Buff.affect(target, Frost.class, Frost.duration(target) * Random.Float(3f, 5f));
-									break;
-							}
-							afterZap.call();
+					public void call() {
+						Char target = Actor.findChar(bolt.collisionPos);
+						switch (Random.Int(2)){
+							case 0:
+								if (target != null)
+									Buff.affect(target, Burning.class).reignite(target);
+								Buff.affect(user, Frost.class, Frost.duration(user) * Random.Float(3f, 5f));
+								break;
+							case 1:
+								Buff.affect(user, Burning.class).reignite(user);
+								if (target != null)
+									Buff.affect(target, Frost.class, Frost.duration(target) * Random.Float(3f, 5f));
+								break;
 						}
-					});
+						afterZap.call();
+					}
+				});
 				break;
 
 			//spawns some regrowth
@@ -325,7 +325,7 @@ public class CursedWand {
 
 					Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
 					if (buff != null) buff.detach();
-					
+
 					buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
 					if (buff != null) buff.detach();
 
@@ -386,7 +386,7 @@ public class CursedWand {
 						} else {
 							GLog.i(Messages.get(CursedWand.class, "nothing"));
 						}
-						
+
 						afterZap.call();
 					}
 				});
@@ -403,12 +403,12 @@ public class CursedWand {
 					} else {
 						GameScene.show(
 								new WndOptions("CURSED WAND ERROR", "this application will now self-destruct", "abort", "retry", "fail") {
-									
+
 									@Override
 									protected void onSelect(int index) {
 										Game.instance.finish();
 									}
-									
+
 									@Override
 									public void onBackPressed() {
 										//do nothing

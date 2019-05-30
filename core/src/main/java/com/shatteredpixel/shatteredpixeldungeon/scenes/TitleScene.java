@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ChangesButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.LanguageButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.LoginButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.PrefsButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStartGame;
 import com.watabou.glwrap.Blending;
@@ -179,12 +178,6 @@ public class TitleScene extends PixelScene {
 		LanguageButton btnLang = new LanguageButton();
 		btnLang.setRect(pos, 0, 14, 16);
 		add( btnLang );
-
-		pos += btnLang.width();
-
-		LoginButton btnLogin = new LoginButton();
-		btnLogin.setRect(pos, 0, 18, 16);
-		add( btnLogin );
 
 		ExitButton btnExit = new ExitButton();
 		btnExit.setPos( w - btnExit.width(), 0 );

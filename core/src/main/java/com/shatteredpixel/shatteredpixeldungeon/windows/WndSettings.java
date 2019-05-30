@@ -114,7 +114,17 @@ public class WndSettings extends WndTabbed {
 				protected void onChange() {
 					if (getSelectedValue() != SPDSettings.scale()) {
 						SPDSettings.scale(getSelectedValue());
-						ShatteredPixelDungeon.seamlessResetScene();
+						ShatteredPixelDungeon.switchNoFade((Class<? extends PixelScene>) ShatteredPixelDungeon.scene().getClass(), new Game.SceneChangeCallback() {
+							@Override
+							public void beforeCreate() {
+								//do nothing
+							}
+
+							@Override
+							public void afterCreate() {
+								Game.scene().add(new WndSettings());
+							}
+						});
 					}
 				}
 			};
@@ -283,7 +293,7 @@ public class WndSettings extends WndTabbed {
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
+					ShatteredPixelDungeon.switchNoFade((Class<? extends PixelScene>) ShatteredPixelDungeon.scene().getClass(), new Game.SceneChangeCallback() {
 						@Override
 						public void beforeCreate() {
 							SPDSettings.systemFont(checked());
@@ -291,7 +301,7 @@ public class WndSettings extends WndTabbed {
 
 						@Override
 						public void afterCreate() {
-							//do nothing
+							Game.scene().add(new WndSettings());
 						}
 					});
 				}

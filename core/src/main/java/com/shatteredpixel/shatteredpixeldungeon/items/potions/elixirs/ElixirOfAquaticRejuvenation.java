@@ -33,8 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Random;
 
 public class ElixirOfAquaticRejuvenation extends Elixir {
 	
@@ -45,7 +43,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 	
 	@Override
 	public void apply(Hero hero) {
-		Buff.affect(hero, AquaHealing.class).set(Math.round(hero.HT * 1.5f));
+		Buff.affect(hero, AquaHealing.class).set(hero.HT * 3);
 	}
 	
 	@Override
@@ -71,18 +69,11 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		public boolean act() {
 			
 			if (Dungeon.level.water[target.pos] && target.HP < target.HT){
-				float healAmt = GameMath.gate( 1, target.HT/50f, left );
-				if (Random.Float() < (healAmt % 1)){
-					healAmt = (float)Math.ceil(healAmt);
-				} else {
-					healAmt = (float)Math.floor(healAmt);
-				}
-				target.HP += healAmt;
-				left -= healAmt;
+				target.HP++;
 				target.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 			}
 			
-			if (left <= 0){
+			if (left-- <= 0){
 				detach();
 			} else {
 				spend(TICK);
@@ -110,7 +101,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", left);
+			return Messages.get(this, "desc", left+1);
 		}
 		
 		private static final String LEFT = "left";
@@ -135,7 +126,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 			inputs =  new Class[]{PotionOfHealing.class, GooBlob.class};
 			inQuantity = new int[]{1, 1};
 			
-			cost = 6;
+			cost = 4;
 			
 			output = ElixirOfAquaticRejuvenation.class;
 			outQuantity = 1;

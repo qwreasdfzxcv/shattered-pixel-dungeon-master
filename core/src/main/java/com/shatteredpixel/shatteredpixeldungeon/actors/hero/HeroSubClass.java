@@ -30,19 +30,24 @@ public enum HeroSubClass {
 	
 	GLADIATOR( "gladiator" ),
 	BERSERKER( "berserker" ),
+	BULWARK("bulwark"),
 	
 	WARLOCK( "warlock" ),
 	BATTLEMAGE( "battlemage" ),
+	SUMMONER("summoner"),
 	
 	ASSASSIN( "assassin" ),
 	FREERUNNER( "freerunner" ),
+	DUELIST("duelist"),
 	
 	SNIPER( "sniper" ),
 	WARDEN( "warden" ),
+	SPIRITWALKER("spiritwalker"),
 
 	CRUSADER( "crusader" ),
-	SCHOLAR( "scholar" );
-	
+	SCHOLAR( "scholar" ),
+	PILGRIM("pilgrim");
+
 	private String title;
 	
 	HeroSubClass( String title ) {

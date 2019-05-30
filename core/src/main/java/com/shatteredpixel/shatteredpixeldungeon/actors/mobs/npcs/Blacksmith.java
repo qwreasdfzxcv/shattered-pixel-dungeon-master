@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -69,26 +71,45 @@ public class Blacksmith extends NPC {
 		sprite.turnTo( pos, Dungeon.hero.pos );
 		
 		if (!Quest.given) {
-			
-			GameScene.show( new WndQuest( this,
-				Quest.alternative ? Messages.get(this, "blood_1") : Messages.get(this, "gold_1") ) {
-				
+			if (Dungeon.hero.subClass == HeroSubClass.PILGRIM) {
+				GameScene.show(new WndQuest(this,
+						Quest.alternative ? Messages.get(this, "gold_1") : Messages.get(this, "gold_1")) {
+
 				@Override
 				public void onBackPressed() {
 					super.onBackPressed();
-					
+
 					Quest.given = true;
 					Quest.completed = false;
-					
+
 					Pickaxe pick = new Pickaxe();
-					if (pick.doPickUp( Dungeon.hero )) {
-						GLog.i( Messages.get(Dungeon.hero, "you_now_have", pick.name() ));
+					if (pick.doPickUp(Dungeon.hero)) {
+						GLog.i(Messages.get(Dungeon.hero, "you_now_have", pick.name()));
 					} else {
-						Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+						Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
 					}
 				}
-			} );
-			
+			});} else {
+				GameScene.show(new WndQuest(this,
+						Quest.alternative ? Messages.get(this, "blood_1") : Messages.get(this, "gold_1")) {
+
+					@Override
+					public void onBackPressed() {
+						super.onBackPressed();
+
+						Quest.given = true;
+						Quest.completed = false;
+
+						Pickaxe pick = new Pickaxe();
+						if (pick.doPickUp(Dungeon.hero)) {
+							GLog.i(Messages.get(Dungeon.hero, "you_now_have", pick.name()));
+						} else {
+							Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
+						}
+					}
+				});
+			}
+				
 			Notes.add( Notes.Landmark.TROLL );
 			
 		} else if (!Quest.completed) {
@@ -136,7 +157,7 @@ public class Blacksmith extends NPC {
 			GameScene.show( new WndBlacksmith( this, Dungeon.hero ) );
 			
 		} else {
-			
+
 			tell( Messages.get(this, "get_lost") );
 			
 		}

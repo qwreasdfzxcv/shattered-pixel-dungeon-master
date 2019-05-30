@@ -41,11 +41,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTiledVisual;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -68,9 +67,6 @@ public class PrisonBossLevel extends Level {
 		FIGHT_ARENA,
 		WON
 	}
-	
-	private static final int ARENA_CENTER = 5+28*32;
-	private static final int ARENA_DOOR = 5+25*32;
 	
 	private State state;
 	private Tengu tengu;
@@ -146,6 +142,11 @@ public class PrisonBossLevel extends Level {
 	}
 	
 	@Override
+	public Mob createMob() {
+		return null;
+	}
+	
+	@Override
 	protected void createMobs() {
 		tengu = new Tengu(); //We want to keep track of tengu independently of other mobs, he's not always in the level.
 	}
@@ -174,17 +175,6 @@ public class PrisonBossLevel extends Level {
 		pos += Random.Int(3) + Random.Int(3)*32;
 
 		return pos;
-	}
-	
-	private int randomTenguArenaCell(){
-		int pos = ARENA_CENTER - 2 - (2*32);//initial position at top-left of room
-		
-		pos += Random.Int(5)*32;
-		pos += Random.Int(5);
-		
-		//cannot choose the center
-		if (pos == ARENA_CENTER)    return randomTenguArenaCell();
-		else                        return pos;
 	}
 
 	@Override
@@ -301,25 +291,25 @@ public class PrisonBossLevel extends Level {
 			case START:
 				
 				//if something is occupying Tengu's space, wait and do nothing.
-				if (Actor.findChar(ARENA_CENTER) != null){
+				if (Actor.findChar(5 + 28*32) != null){
 					return;
 				}
 				
 				seal();
-				set(ARENA_DOOR, Terrain.LOCKED_DOOR);
-				GameScene.updateMap(ARENA_DOOR);
+				set(5 + 25 * 32, Terrain.LOCKED_DOOR);
+				GameScene.updateMap(5 + 25 * 32);
 
 				for (Mob m : mobs){
 					//bring the first ally with you
 					if (m.alignment == Char.Alignment.ALLY){
-						m.pos = ARENA_DOOR; //they should immediately walk out of the door
+						m.pos = 5 + 25 * 32; //they should immediately walk out of the door
 						m.sprite.place(m.pos);
 						break;
 					}
 				}
 				
 				tengu.state = tengu.HUNTING;
-				tengu.pos = ARENA_CENTER; //in the middle of the fight room
+				tengu.pos = 5 + 28*32; //in the middle of the fight room
 				GameScene.add( tengu );
 				tengu.notice();
 
@@ -387,7 +377,7 @@ public class PrisonBossLevel extends Level {
 			case FIGHT_ARENA:
 				unseal();
 
-				CustomTilemap vis = new exitVisual();
+				CustomTiledVisual vis = new exitVisual();
 				vis.pos(11, 8);
 				customTiles.add(vis);
 				((GameScene)ShatteredPixelDungeon.scene()).addCustomTile(vis);
@@ -402,8 +392,8 @@ public class PrisonBossLevel extends Level {
 				Dungeon.hero.sprite.interruptMotion();
 				Dungeon.hero.sprite.place(Dungeon.hero.pos);
 
-				tengu.pos = ARENA_CENTER;
-				tengu.sprite.place(ARENA_CENTER);
+				tengu.pos = 5+28*32;
+				tengu.sprite.place(5 + 28 * 32);
 				
 				//remove all mobs, but preserve allies
 				ArrayList<Mob> allies = new ArrayList<>();
@@ -413,23 +403,22 @@ public class PrisonBossLevel extends Level {
 						mobs.remove(m);
 					}
 				}
+				clearEntities(null);
 				
 				changeMap(MAP_END);
 				
 				for (Mob m : allies){
 					do{
-						m.pos = randomTenguArenaCell();
+						m.pos = Random.IntRange(3, 7) + Random.IntRange(26, 30)*32;
 					} while (findMob(m.pos) != null);
 					m.sprite().place(m.pos);
 					mobs.add(m);
 				}
 
 				tengu.die(Dungeon.hero);
-				
-				clearEntities((Room) new EmptyRoom().set(3, 26, 7, 30)); //arena is safe
 
 				for (Item item : storedItems)
-					drop(item, randomTenguArenaCell());
+					drop(item, randomPrisonCell());
 				
 				GameScene.flash(0xFFFFFF);
 				Sample.INSTANCE.play(Assets.SND_BLAST);
@@ -598,17 +587,8 @@ public class PrisonBossLevel extends Level {
 					W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W};
 
 
-	public static class exitVisual extends CustomTilemap {
-		
-		{
-			texture = Assets.PRISON_EXIT;
-			
-			tileW = 12;
-			tileH = 14;
-		}
-		
-		final int TEX_WIDTH = 256;
-		
+	public static class exitVisual extends CustomTiledVisual {
+
 		private static short[] render = new short[]{
 				0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -625,33 +605,26 @@ public class PrisonBossLevel extends Level {
 				1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		};
-		
-		@Override
-		public Tilemap create() {
-			
-			Tilemap v = super.create();
-			int[] data = mapSimpleImage(0, 0, TEX_WIDTH);
-			for (int i = 0; i < data.length; i++){
-				if (render[i] == 0) data[i] = -1;
-			}
-			
-			v.map(data, tileW);
-			return v;
+
+		public exitVisual() {
+			super(Assets.PRISON_EXIT);
 		}
 
-	}
-
-	public static class exitVisualWalls extends CustomTilemap {
-		
-		{
-			texture = Assets.PRISON_EXIT;
-			
+		@Override
+		public CustomTiledVisual create() {
 			tileW = 12;
 			tileH = 14;
+			mapSimpleImage(0, 0);
+			return super.create();
 		}
-		
-		final int TEX_WIDTH = 256;
-		
+
+		@Override
+		protected boolean needsRender(int pos) {
+			return render[pos] != 0;
+		}
+	}
+
+	public static class exitVisualWalls extends CustomTiledVisual {
 		private static short[] render = new short[]{
 				0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -669,19 +642,21 @@ public class PrisonBossLevel extends Level {
 				1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		};
 
-		@Override
-		public Tilemap create() {
-			
-			Tilemap v = super.create();
-			
-			int[] data = mapSimpleImage(4, 0, TEX_WIDTH);
-			for (int i = 0; i < data.length; i++){
-				if (render[i] == 0) data[i] = -1;
-			}
-			
-			v.map(data, tileW);
-			return v;
+		public exitVisualWalls() {
+			super(Assets.PRISON_EXIT);
 		}
 
+		@Override
+		public CustomTiledVisual create() {
+			tileW = 12;
+			tileH = 14;
+			mapSimpleImage(4, 0);
+			return super.create();
+		}
+
+		@Override
+		protected boolean needsRender(int pos) {
+			return render[pos] != 0;
+		}
 	}
 }

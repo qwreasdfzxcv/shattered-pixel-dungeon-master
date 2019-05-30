@@ -114,6 +114,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DamagedShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
@@ -138,21 +139,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Dreamfoil;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -322,7 +319,8 @@ public class Generator {
 					WornShortsword.class,
 					Gloves.class,
 					Dagger.class,
-					MagesStaff.class
+					MagesStaff.class,
+					DamagedShield.class,
 			};
 			WEP_T1.probs = new float[]{ 1, 1, 1, 0 };
 			
@@ -379,38 +377,34 @@ public class Generator {
 			MISSILE.probs = new float[]{};
 			
 			MIS_T1.classes = new Class<?>[]{
-					ThrowingStone.class,
+					Dart.class,
 					ThrowingKnife.class
 			};
-			MIS_T1.probs = new float[]{ 6, 5 };
+			MIS_T1.probs = new float[]{ 1, 1 };
 			
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
-					ThrowingClub.class,
 					Shuriken.class
 			};
-			MIS_T2.probs = new float[]{ 6, 5, 4 };
+			MIS_T2.probs = new float[]{ 4, 3 };
 			
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
-					Kunai.class,
 					Bolas.class
 			};
-			MIS_T3.probs = new float[]{ 6, 5, 4 };
+			MIS_T3.probs = new float[]{ 4, 3 };
 			
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
-					Tomahawk.class,
-					HeavyBoomerang.class
+					Tomahawk.class
 			};
-			MIS_T4.probs = new float[]{ 6, 5, 4 };
+			MIS_T4.probs = new float[]{ 4, 3 };
 			
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
-					ThrowingHammer.class,
-					ForceCube.class
+					ThrowingHammer.class
 			};
-			MIS_T5.probs = new float[]{ 6, 5, 4 };
+			MIS_T5.probs = new float[]{ 4, 3 };
 			
 			FOOD.classes = new Class<?>[]{
 					Food.class,

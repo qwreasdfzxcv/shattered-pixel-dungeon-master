@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.food;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -105,6 +106,9 @@ public class Food extends Item {
 				//1 charge
 				Buff.affect( hero, Recharging.class, 4f );
 				ScrollOfRecharging.charge( hero );
+				break;
+			case CLERIC:
+				Buff.affect( hero, Bless.class, 16f );
 				break;
 			case ROGUE:
 			case HUNTRESS:

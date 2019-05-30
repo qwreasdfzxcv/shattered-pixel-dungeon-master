@@ -38,26 +38,26 @@ import com.watabou.utils.DeviceCompat;
 import javax.microedition.khronos.opengles.GL10;
 
 public class ShatteredPixelDungeon extends Game {
-
+	
 	//variable constants for specific older versions of shattered, used for data conversion
 	//versions older than v0.6.2e are no longer supported, and data from them is ignored
 	public static final int v0_6_2e = 229;
 	public static final int v0_6_3b = 245;
 	public static final int v0_6_4a = 252;
 	public static final int v0_6_5c = 264;
-
+	
 	public static final int v0_7_0c = 311;
 	public static final int v0_7_1d = 323;
 	public static final int v0_7_2  = 333;
-
+	
 	public ShatteredPixelDungeon() {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass );
-
+		
 		//v0.6.3
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tamahawk" );
-
+		
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Dart" );
@@ -67,7 +67,7 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ParalyticDart.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CurareDart" );
-
+		
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfVenom" );
@@ -80,21 +80,21 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap.class,
 				"com.shatteredpixel.shatteredpixeldungeon.levels.traps.VenomTrap" );
-
+		
 		//v0.6.4
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.bags.SeedPouch" );
-
+		
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.bags.WandHolster" );
-
+		
 		//v0.6.5
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.Weightstone" );
-
+		
 		//v0.7.0
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb.class,
@@ -108,21 +108,21 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicalInfusion" );
-
+		
 		//v0.7.1
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang" );
-
+		
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles" );
-
+		
 		//v0.7.2
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDisarming.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDetectCurse" );
-
+		
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.curses.Elastic" );
@@ -139,30 +139,22 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous" );
 		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic.class,
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Precise.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal" );
-
-		//v0.7.3
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Precise" );
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Swift" );
 	}
-
+	
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate(savedInstanceState);
 
 		updateSystemUI();
 		SPDSettings.landscape ( SPDSettings.landscape() );
-
+		
 		Music.INSTANCE.enable( SPDSettings.music() );
 		Music.INSTANCE.volume( SPDSettings.musicVol()/10f );
 		Sample.INSTANCE.enable( SPDSettings.soundFx() );
 		Sample.INSTANCE.volume( SPDSettings.SFXVol()/10f );
-
+		
 		Music.setMuteListener();
 
 		Sample.INSTANCE.load(
@@ -220,7 +212,7 @@ public class ShatteredPixelDungeon extends Game {
 		} else {
 			RenderedText.setFont( null );
 		}
-
+		
 	}
 
 	@Override
@@ -230,7 +222,7 @@ public class ShatteredPixelDungeon extends Game {
 		}
 		super.onSaveInstanceState(outState);
 	}
-
+	
 	@Override
 	public void onWindowFocusChanged( boolean hasFocus ) {
 		super.onWindowFocusChanged( hasFocus );
@@ -252,20 +244,7 @@ public class ShatteredPixelDungeon extends Game {
 		PixelScene.noFade = true;
 		switchScene( c, callback );
 	}
-
-	public static void seamlessResetScene(SceneChangeCallback callback) {
-		if (scene() instanceof PixelScene){
-			((PixelScene) scene()).saveWindows();
-			switchNoFade((Class<? extends PixelScene>) sceneClass, callback );
-		} else {
-			resetScene();
-		}
-	}
-
-	public static void seamlessResetScene(){
-		seamlessResetScene(null);
-	}
-
+	
 	@Override
 	protected void switchScene() {
 		super.switchScene();
@@ -273,10 +252,10 @@ public class ShatteredPixelDungeon extends Game {
 			((PixelScene) scene).restoreWindows();
 		}
 	}
-
+	
 	@Override
 	public void onSurfaceChanged( GL10 gl, int width, int height ) {
-
+		
 		if (scene instanceof PixelScene &&
 				(height != Game.height || width != Game.width)) {
 			((PixelScene) scene).saveWindows();
@@ -290,7 +269,7 @@ public class ShatteredPixelDungeon extends Game {
 
 	public void updateDisplaySize(){
 		boolean landscape = SPDSettings.landscape();
-
+		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 			instance.setRequestedOrientation(landscape ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
@@ -300,7 +279,7 @@ public class ShatteredPixelDungeon extends Game {
 					ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
-
+		
 		if (view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
 			return;
 
@@ -354,7 +333,7 @@ public class ShatteredPixelDungeon extends Game {
 	public static void updateSystemUI() {
 
 		boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-				|| !instance.isInMultiWindowMode();
+								|| !instance.isInMultiWindowMode();
 
 		if (fullscreen){
 			instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -368,9 +347,9 @@ public class ShatteredPixelDungeon extends Game {
 			if (fullscreen && SPDSettings.fullscreen()) {
 				instance.getWindow().getDecorView().setSystemUiVisibility(
 						View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-								View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-								View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-								View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
+						View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+						View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
 			} else {
 				instance.getWindow().getDecorView().setSystemUiVisibility(
 						View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
@@ -378,5 +357,5 @@ public class ShatteredPixelDungeon extends Game {
 		}
 
 	}
-
+	
 }

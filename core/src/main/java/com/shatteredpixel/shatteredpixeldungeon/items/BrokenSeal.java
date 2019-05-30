@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -35,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndItem;
 import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 public class BrokenSeal extends Item {
 
@@ -107,7 +110,9 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (shielding() < maxShield()) {
-				partialShield += 1/30f;
+				if (hero.subClass == HeroSubClass.BULWARK) {
+					partialShield += 2/(35*Math.pow(0.9f, (maxShield() - shielding() - 1)));
+				} else { partialShield += 1/(35*Math.pow(0.9f, (maxShield() - shielding() - 1))); }
 			}
 			
 			while (partialShield >= 1){
@@ -135,7 +140,9 @@ public class BrokenSeal extends Item {
 
 		public synchronized int maxShield() {
 			if (armor != null && armor.isEquipped((Hero)target)) {
-				return 1 + armor.tier + armor.level();
+				if (hero.subClass == HeroSubClass.BULWARK) {
+					return 1 + (3*(armor.tier + armor.level()));
+				} else return 1 + armor.tier + armor.level();
 			} else {
 				return 0;
 			}

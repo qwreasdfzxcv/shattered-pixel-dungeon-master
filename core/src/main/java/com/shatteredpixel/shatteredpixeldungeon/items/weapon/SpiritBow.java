@@ -132,16 +132,12 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return 1 + Dungeon.hero.lvl/5
-				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
-				+ (curseInfusionBonus ? 1 : 0);
+		return 1 + Dungeon.hero.lvl/5 + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6 + (int)(Dungeon.hero.lvl/2.5f)
-				+ 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
-				+ (curseInfusionBonus ? 2 : 0);
+		return 6 + (int)(Dungeon.hero.lvl/2.5f) + 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 	
 	private int targetPos;
@@ -194,13 +190,18 @@ public class SpiritBow extends Weapon {
 	@Override
 	public int level() {
 		//need to check if hero is null for loading an upgraded bow from pre-0.7.0
-		return (Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5)
-				+ (curseInfusionBonus ? 1 : 0);
+		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
 	}
 	
-	//for fetching upgrades from a boomerang from pre-0.7.1
+	@Override
+	public int visiblyUpgraded() {
+		return level();
+	}
+	
+	//for fetching upgrades from a boomerang from pre-0.7.0
+	//TODO implement on this
 	public int spentUpgrades() {
-		return super.level() - (curseInfusionBonus ? 1 : 0);
+		return super.level();
 	}
 	
 	@Override

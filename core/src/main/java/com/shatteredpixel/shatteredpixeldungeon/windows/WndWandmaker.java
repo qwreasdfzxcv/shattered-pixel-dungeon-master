@@ -22,8 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -53,7 +56,13 @@ public class WndWandmaker extends Window {
 		add( titlebar );
 
 		String msg = "";
-		if (item instanceof CorpseDust){
+		if (Dungeon.hero.heroClass == HeroClass.CLERIC && item instanceof CorpseDust) {
+			msg = Messages.get(this, "dust_cleric");
+		} else if (Dungeon.hero.heroClass == HeroClass.CLERIC && item instanceof Embers){
+			msg = Messages.get(this, "ember_cleric");
+		} else if (Dungeon.hero.heroClass == HeroClass.CLERIC && item instanceof Rotberry.Seed){
+			msg = Messages.get(this, "berry_cleric");
+		} else if (item instanceof CorpseDust){
 			msg = Messages.get(this, "dust");
 		} else if (item instanceof Embers){
 			msg = Messages.get(this, "ember");
@@ -65,7 +74,17 @@ public class WndWandmaker extends Window {
 		message.maxWidth(WIDTH);
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
-		
+
+		if (Dungeon.hero.heroClass == HeroClass.CLERIC) {
+            RedButton btnReward = new RedButton( Messages.get(this, "reward_cleric") ) {
+				@Override
+				protected void onClick() { selectReward_cleric( wandmaker, item ); }
+			};
+            btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
+			add( btnReward );
+			resize( WIDTH, (int)btnReward.bottom() );
+
+		} else {
 		RedButton btnWand1 = new RedButton( Wandmaker.Quest.wand1.name() ) {
 			@Override
 			protected void onClick() {
@@ -85,7 +104,7 @@ public class WndWandmaker extends Window {
 		add( btnWand2 );
 		
 		resize(WIDTH, (int) btnWand2.bottom());
-	}
+	} }
 	
 	private void selectReward( Wandmaker wandmaker, Item item, Wand reward ) {
 		
@@ -105,6 +124,27 @@ public class WndWandmaker extends Window {
 		
 		wandmaker.sprite.die();
 		
+		Wandmaker.Quest.complete();
+	}
+
+	private void selectReward_cleric( Wandmaker wandmaker, Item item) {
+
+		hide();
+
+		item.detach( Dungeon.hero.belongings.backpack );
+
+        PotionOfExperience reward = new PotionOfExperience();
+		if (reward.doPickUp( Dungeon.hero )) {
+			GLog.p( Messages.get(Dungeon.hero, "you_now_have", reward.name()) );
+		} else {
+			Dungeon.level.drop( reward, wandmaker.pos ).sprite.drop();
+		}
+
+		wandmaker.yell( Messages.get(this, "farewell", Dungeon.hero.givenName()) );
+		wandmaker.destroy();
+
+		wandmaker.sprite.die();
+
 		Wandmaker.Quest.complete();
 	}
 }

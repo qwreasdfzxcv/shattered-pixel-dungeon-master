@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -30,20 +31,31 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Duel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pacified;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pilgrim;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PilgrimPunish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Bible;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -57,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
@@ -465,6 +478,7 @@ public abstract class Mob extends Char {
 	protected float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
+		if ( buff(Summoned_energized.class) != null) delay /= 2f;
 		return delay;
 	}
 	
@@ -515,7 +529,7 @@ public abstract class Mob extends Char {
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-		
+
 		if (enemy instanceof Hero && ((Hero) enemy).belongings.weapon instanceof MissileWeapon){
 			hitWithRanged = true;
 		}
@@ -585,17 +599,54 @@ public abstract class Mob extends Char {
 		Dungeon.level.mobs.remove( this );
 		
 		if (Dungeon.hero.isAlive()) {
-			
+
 			if (alignment == Alignment.ENEMY) {
 				Statistics.enemiesSlain++;
 				Badges.validateMonstersSlain();
-				Statistics.qualifiedForNoKilling = false;
-				
+
+				if (Dungeon.hero.subClass == HeroSubClass.PILGRIM
+						&& (properties().contains(Property.BOSS) || properties().contains(Property.NONPACIFIED))) {
+				} else Statistics.qualifiedForNoKilling = false;
+
 				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
 				if (exp > 0) {
+					if (Dungeon.hero.subClass == HeroSubClass.PILGRIM) {
+						exp /= 2;
+					} else
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 				}
 				Dungeon.hero.earnExp(exp, getClass());
+
+				if (Dungeon.hero.subClass == HeroSubClass.CRUSADER){
+				Buff.affect(Dungeon.hero, Bless.class, Dungeon.hero.lvl+1f);
+				CellEmitter.get(Dungeon.hero.pos).start( ShaftParticle.FACTORY, 0.2f, 4 );}
+
+				if (Dungeon.hero.subClass == HeroSubClass.DUELIST) {
+					Actor.add(new Actor() {
+
+						{
+							actPriority = VFX_PRIO;
+						}
+
+						@Override
+						protected boolean act() {
+							Buff.prolong(Dungeon.hero, Duel.class, 2f);
+							Actor.remove(this);
+							return true;
+						}
+					});
+				}
+
+				if (Dungeon.hero.subClass == HeroSubClass.PILGRIM) {
+					if (properties().contains(Property.BOSS) || properties().contains(Property.NONPACIFIED)) {
+						GLog.i(Messages.get(Bible.class, "pilgrim_ok"));
+					} else {
+						GLog.w(Messages.get(Bible.class, "pilgrim_punish"));
+						Buff.affect(Dungeon.hero, PilgrimPunish.class, Dungeon.depth * 10);
+						Sample.INSTANCE.play( Assets.SND_MIMIC );
+						Dungeon.hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
+					}
+				}
 			}
 		}
 	}
@@ -725,6 +776,10 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+			if (buff(Pacified.class) != null) {
+				state = PASSIVE;
+				return true;
+			} else {
 			if (enemyInFOV && Random.Float( distance( enemy ) + enemy.stealth() + (enemy.flying ? 2 : 0) ) < 1) {
 
 				enemySeen = true;
@@ -751,7 +806,7 @@ public abstract class Mob extends Char {
 
 			}
 			return true;
-		}
+		} }
 	}
 
 	protected class Wandering implements AiState {
@@ -760,6 +815,10 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+			if (buff(Pacified.class) != null) {
+				state = PASSIVE;
+				return true;
+			} else {
 			if (enemyInFOV && (justAlerted || Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1)) {
 
 				enemySeen = true;
@@ -792,7 +851,7 @@ public abstract class Mob extends Char {
 
 			}
 			return true;
-		}
+		} }
 	}
 
 	protected class Hunting implements AiState {
@@ -801,8 +860,15 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+			if (buff(Pacified.class) != null) {
+				state = PASSIVE;
+				return true;
+			} else {
+
 			enemySeen = enemyInFOV;
-			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )
+				&& Dungeon.hero.buff(Duel.class) == null
+				&& enemy.buff(Pacified.class) == null) {
 
 				return doAttack( enemy );
 
@@ -832,7 +898,7 @@ public abstract class Mob extends Char {
 					return true;
 				}
 			}
-		}
+		} }
 	}
 
 	protected class Fleeing implements AiState {
@@ -841,6 +907,10 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+			if (buff(Pacified.class) != null) {
+				state = PASSIVE;
+				return true;
+			} else {
 			enemySeen = enemyInFOV;
 			//loses target when 0-dist rolls a 6 or greater.
 			if (enemy == null || !enemyInFOV && 1 + Random.Int(Dungeon.level.distance(pos, target)) >= 6){
@@ -864,7 +934,7 @@ public abstract class Mob extends Char {
 
 				return true;
 			}
-		}
+		} }
 
 		protected void nowhereToRun() {
 		}

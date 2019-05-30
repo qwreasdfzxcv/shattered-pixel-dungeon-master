@@ -24,6 +24,18 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_blasting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_brightning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_chilly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_corrosive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_destructive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_dooming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_firey;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_herbral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_protective;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_shocking;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
@@ -99,10 +111,25 @@ public class WandOfDisintegration extends DamageWand {
 		
 		int lvl = level + (chars.size()-1) + terrainBonus;
 		for (Char ch : chars) {
+			if (ch.properties().contains(Char.Property.SUMMONED)) {
+				ch.sprite.centerEmitter().burst( PurpleParticle.BURST, 4 );
+				ch.sprite.flash();
+				Buff.affect(ch, Summoned_destructive.class);
+				Buff.detach(ch, Summoned_corrosive.class);
+				Buff.detach(ch, Summoned_chilly.class);
+				Buff.detach(ch, Summoned_energized.class);
+				Buff.detach(ch, Summoned_firey.class);
+				Buff.detach(ch, Summoned_herbral.class);
+				Buff.detach(ch, Summoned_protective.class);
+				Buff.detach(ch, Summoned_shocking.class);
+				Buff.detach(ch, Summoned_blasting.class);
+				Buff.detach(ch, Summoned_dooming.class);
+				Buff.detach(ch, Summoned_brightning.class);
+			} else {
 			processSoulMark(ch, chargesPerCast());
 			ch.damage( damageRoll(lvl), this );
 			ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
-			ch.sprite.flash();
+			ch.sprite.flash(); }
 		}
 	}
 

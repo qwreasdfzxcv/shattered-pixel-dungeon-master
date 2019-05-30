@@ -24,10 +24,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Summoned;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -36,9 +43,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
@@ -48,6 +55,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -58,6 +66,7 @@ public class MagesStaff extends MeleeWeapon {
 
 	public static final String AC_IMBUE = "IMBUE";
 	public static final String AC_ZAP	= "ZAP";
+	public static final String AC_SUMMON	= "SUMMON";
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
 
@@ -88,7 +97,7 @@ public class MagesStaff extends MeleeWeapon {
 		wand.identify();
 		wand.cursed = false;
 		this.wand = wand;
-		updateWand(false);
+		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
 		name = Messages.get(wand, "staff_name");
 	}
@@ -99,6 +108,8 @@ public class MagesStaff extends MeleeWeapon {
 		actions.add(AC_IMBUE);
 		if (wand!= null && wand.curCharges > 0) {
 			actions.add( AC_ZAP );
+			if (Dungeon.hero.subClass == HeroSubClass.SUMMONER) {
+				actions.add( AC_SUMMON ); }
 		}
 		return actions;
 	}
@@ -118,16 +129,46 @@ public class MagesStaff extends MeleeWeapon {
 			curUser = hero;
 			GameScene.selectItem(itemSelector, WndBag.Mode.WAND, Messages.get(this, "prompt"));
 
-		} else if (action.equals(AC_ZAP)){
+		} else if (action.equals(AC_ZAP)) {
 
 			if (wand == null) {
 				GameScene.show(new WndItem(null, this, true));
 				return;
 			}
 
-			if (cursed || hasCurseEnchant()) wand.cursed = true;
-			else                             wand.cursed = false;
 			wand.execute(hero, AC_ZAP);
+		} else if (action.equals(AC_SUMMON)) {
+			boolean found = false;
+			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0]))
+				if (m instanceof Summoned) {
+					found = true;
+					GLog.i( Messages.get(this, "summoned_exist") );
+				}
+
+			if (!found) {
+				ArrayList<Integer> spawnPoints = new ArrayList<Integer>();
+				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+					int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+					if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+						spawnPoints.add(p);
+					}
+				}
+
+				if (spawnPoints.size() > 0) {
+					Summoned summoned = new Summoned();
+					summoned.pos = Random.element(spawnPoints);
+
+					GameScene.add(summoned, 1f);
+					CellEmitter.get(summoned.pos).start( Speck.factory(Speck.WOOL), 0.2f, 6 );
+					Sample.INSTANCE.play( Assets.SND_PUFF );
+
+					wand.curCharges--;
+					hero.sprite.zap(summoned.pos);
+					Sample.INSTANCE.play( Assets.SND_READ );
+					GLog.p( Messages.get(this, "summoning_summon"));
+					updateQuickslot();
+
+				} else GLog.i( Messages.get(this, "no_space") ); }
 		}
 	}
 
@@ -172,18 +213,31 @@ public class MagesStaff extends MeleeWeapon {
 
 	public Item imbueWand(Wand wand, Char owner){
 
+		wand.cursed = false;
 		this.wand = null;
 
 		//syncs the level of the two items.
-		int targetLevel = Math.max(this.level() - (curseInfusionBonus ? 1 : 0), wand.level());
+		int targetLevel = Math.max(this.level(), wand.level());
 
 		//if the staff's level is being overridden by the wand, preserve 1 upgrade
-		if (wand.level() >= this.level() && this.level() > (curseInfusionBonus ? 1 : 0)) targetLevel++;
-		
-		level(targetLevel);
+		if (wand.level() >= this.level() && this.level() > 0) targetLevel++;
+
+		int staffLevelDiff = targetLevel - this.level();
+		if (staffLevelDiff > 0)
+			this.upgrade(staffLevelDiff);
+		else if (staffLevelDiff < 0)
+			this.degrade(Math.abs(staffLevelDiff));
+
+		int wandLevelDiff = targetLevel - wand.level();
+		if (wandLevelDiff > 0)
+			wand.upgrade(wandLevelDiff);
+		else if (wandLevelDiff < 0)
+			wand.degrade(Math.abs(wandLevelDiff));
+
 		this.wand = wand;
-		updateWand(false);
+		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
+		wand.identify();
 		if (owner != null) wand.charge(owner);
 
 		name = Messages.get(wand, "staff_name");
@@ -217,7 +271,14 @@ public class MagesStaff extends MeleeWeapon {
 	public Item upgrade(boolean enchant) {
 		super.upgrade( enchant );
 
-		updateWand(true);
+		if (wand != null) {
+			int curCharges = wand.curCharges;
+			wand.upgrade();
+			//gives the wand one additional charge
+			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
+			wand.curCharges = Math.min(wand.curCharges + 1, 10);
+			updateQuickslot();
+		}
 
 		return this;
 	}
@@ -226,20 +287,16 @@ public class MagesStaff extends MeleeWeapon {
 	public Item degrade() {
 		super.degrade();
 
-		updateWand(false);
-
-		return this;
-	}
-	
-	public void updateWand(boolean levelled){
 		if (wand != null) {
 			int curCharges = wand.curCharges;
-			wand.level(level());
-			//gives the wand one additional max charge
+			wand.degrade();
+			//gives the wand one additional charge
 			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
-			wand.curCharges = Math.min(curCharges + (levelled ? 1 : 0), wand.maxCharges);
+			wand.curCharges = curCharges-1;
 			updateQuickslot();
 		}
+
+		return this;
 	}
 
 	@Override
@@ -259,6 +316,9 @@ public class MagesStaff extends MeleeWeapon {
 		} else {
 			info += "\n\n" + Messages.get(this, "has_wand", Messages.get(wand, "name")) + " " + wand.statsDesc();
 		}
+
+		if (Dungeon.hero.subClass == HeroSubClass.SUMMONER)
+		{ info += Messages.get(this, "can_summon"); }
 
 		return info;
 	}
@@ -295,16 +355,7 @@ public class MagesStaff extends MeleeWeapon {
 	public int price() {
 		return 0;
 	}
-	
-	@Override
-	public Weapon enchant(Enchantment ench) {
-		if (curseInfusionBonus && (ench == null || !ench.curse())){
-			curseInfusionBonus = false;
-			updateWand(false);
-		}
-		return super.enchant(ench);
-	}
-	
+
 	private final WndBag.Listener itemSelector = new WndBag.Listener() {
 		@Override
 		public void onSelect( final Item item ) {

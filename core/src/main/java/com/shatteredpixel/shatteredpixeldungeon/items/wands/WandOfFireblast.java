@@ -31,6 +31,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_blasting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_brightning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_chilly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_corrosive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_destructive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_dooming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_firey;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_herbral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_protective;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_shocking;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -93,6 +104,21 @@ public class WandOfFireblast extends DamageWand {
 		}
 		
 		for ( Char ch : affectedChars ){
+			if (ch.properties().contains(Char.Property.SUMMONED)) {
+				ch.sprite.burst( 0xEE7722, 4 );
+				ch.sprite.flash();
+				Buff.affect(ch, Summoned_firey.class);
+				Buff.detach(ch, Summoned_chilly.class);
+				Buff.detach(ch, Summoned_dooming.class);
+				Buff.detach(ch, Summoned_destructive.class);
+				Buff.detach(ch, Summoned_energized.class);
+				Buff.detach(ch, Summoned_corrosive.class);
+				Buff.detach(ch, Summoned_herbral.class);
+				Buff.detach(ch, Summoned_protective.class);
+				Buff.detach(ch, Summoned_shocking.class);
+				Buff.detach(ch, Summoned_blasting.class);
+				Buff.detach(ch, Summoned_brightning.class);
+			} else {
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 			Buff.affect( ch, Burning.class ).reignite( ch );
@@ -104,7 +130,7 @@ public class WandOfFireblast extends DamageWand {
 				case 3:
 					Buff.affect(ch, Paralysis.class, 4f); break;
 			}
-		}
+		} }
 	}
 
 	//burn... BURNNNNN!.....

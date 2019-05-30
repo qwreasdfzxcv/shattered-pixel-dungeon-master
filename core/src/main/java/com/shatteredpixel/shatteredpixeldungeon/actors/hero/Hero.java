@@ -36,9 +36,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Duel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
@@ -46,19 +49,30 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pacified;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PacifiedDropped;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pilgrim;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PilgrimPunish;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SpiritSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewbornElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.Bible;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
@@ -83,6 +97,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -92,24 +108,26 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Precise;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Swift;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -130,6 +148,9 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 public class Hero extends Char {
 
@@ -218,6 +239,11 @@ public class Hero extends Char {
 			STR += buff.boost();
 		}
 
+		PilgrimPunish punish = buff(PilgrimPunish.class);
+		if (punish != null){
+			STR = 8*(STR/10);
+		}
+
 		return (buff(Weakness.class) != null) ? STR - 2 : STR;
 	}
 
@@ -297,31 +323,37 @@ public class Hero extends Char {
 	public int tier() {
 		return belongings.armor == null ? 0 : belongings.armor.tier;
 	}
+
+	//this variable is only needed because of the boomerang, remove if/when it is no longer equippable
+	boolean rangedAttack = false;
 	
 	public boolean shoot( Char enemy, MissileWeapon wep ) {
 
 		//temporarily set the hero's weapon to the missile weapon being used
 		KindOfWeapon equipped = belongings.weapon;
 		belongings.weapon = wep;
-		boolean hit = attack( enemy );
+		boolean result = attack( enemy );
 		Invisibility.dispel();
 		belongings.weapon = equipped;
-		
-		if (subClass == HeroSubClass.GLADIATOR){
-			if (hit) {
-				Buff.affect( this, Combo.class ).hit( enemy );
-			} else {
-				Combo combo = buff(Combo.class);
-				if (combo != null) combo.miss( enemy );
-			}
-		}
 
-		return hit;
+		return result;
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.weapon;
+		
+		if (wep instanceof Weapon
+				&& (((Weapon) wep).hasEnchant(Precise.class, this)
+				|| (((Weapon) wep).hasEnchant(Unstable.class, this) && Random.Int(11) == 0))){
+			if (Precise.rollToGuaranteeHit((Weapon) wep)){
+				target.sprite.emitter().start( Speck.factory(Speck.LIGHT), 0.05f, 5 );
+				if (((Weapon) wep).hasEnchant(Unstable.class, this)){
+					Unstable.justRolledPrecise = true;
+				}
+				return Integer.MAX_VALUE;
+			}
+		}
 		
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
@@ -333,6 +365,9 @@ public class Hero extends Char {
 				accuracy *= 1.5f;
 			}
 		}
+
+		if (enemy.buff(Pacified.class) != null)
+			accuracy = Integer.MAX_VALUE;
 		
 		if (wep != null) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this ));
@@ -444,7 +479,7 @@ public class Hero extends Char {
 			return true;
 		}
 
-		KindOfWeapon wep = Dungeon.hero.belongings.weapon;
+		KindOfWeapon wep = hero.belongings.weapon;
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
@@ -454,6 +489,15 @@ public class Hero extends Char {
 	}
 	
 	public float attackDelay() {
+		if (buff(Swift.SwiftAttack.class) != null
+				&& buff(Swift.SwiftAttack.class).boostsMelee()) {
+			buff(Swift.SwiftAttack.class).detach();
+			return 0;
+		}
+
+		if (buff(Duel.class) != null)
+			return 0;
+		
 		if (belongings.weapon != null) {
 			
 			return belongings.weapon.speedFactor( this );
@@ -480,7 +524,11 @@ public class Hero extends Char {
 			bubble.processTime(time);
 			return;
 		}
-		
+
+		if (hero.buff(Duel.class) != null) {
+			Buff.detach(hero, Duel.class);
+			return;
+		}
 		super.spend(time);
 	}
 	
@@ -575,7 +623,11 @@ public class Hero extends Char {
 		if( subClass == HeroSubClass.WARDEN && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
 			Buff.affect(this, Barkskin.class).set( lvl + 5, 1 );
 		}
-		
+
+		if( subClass == HeroSubClass.PILGRIM){
+			Buff.affect(this, Pilgrim.class).set();
+		}
+
 		return actResult;
 	}
 	
@@ -848,7 +900,7 @@ public class Hero extends Char {
 
 			Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
 			if (buff != null) buff.detach();
-			buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+			buff = hero.buff(Swiftthistle.TimeBubble.class);
 			if (buff != null) buff.detach();
 			
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
@@ -888,7 +940,7 @@ public class Hero extends Char {
 
 				Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
 				if (buff != null) buff.detach();
-				buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+				buff = hero.buff(Swiftthistle.TimeBubble.class);
 				if (buff != null) buff.detach();
 
 				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
@@ -914,13 +966,11 @@ public class Hero extends Char {
 		if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy )) {
 			
 			sprite.attack( enemy.pos );
-
 			return false;
 
 		} else {
 
 			if (fieldOfView[enemy.pos] && getCloser( enemy.pos )) {
-
 				return true;
 
 			} else {
@@ -936,6 +986,7 @@ public class Hero extends Char {
 	}
 	
 	public void rest( boolean fullRest ) {
+		Buff.detach(hero, Duel.class);
 		spendAndNext( TIME_TO_REST );
 		if (!fullRest) {
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "wait") );
@@ -969,6 +1020,69 @@ public class Hero extends Char {
 				});
 			}
 			break;
+			case SPIRITWALKER:
+				if (wep instanceof SpiritBow.SpiritArrow) {
+					Actor.add(new Actor() {
+
+						{
+							actPriority = VFX_PRIO;
+						}
+
+						@Override
+						protected boolean act() {
+							Buff.prolong(Hero.this, SpiritSight.class, SpiritSight.DURATION);
+							Actor.remove(this);
+							return true;
+						}
+					});
+				}
+				break;
+			case PILGRIM:
+				if (enemy.buff(Pacified.class) != null) {
+					damage = 0;
+					GLog.i( Messages.get(Bible.class, "peaced_mob_away") );
+
+                    if (enemy instanceof NewbornElemental
+                        && enemy.buff(PacifiedDropped.class) == null) {
+                        Mob enemy0 = (Mob) enemy;
+                        Dungeon.level.drop( new Embers(), enemy0.pos ).sprite.drop();
+                        Buff.affect(enemy, PacifiedDropped.class);
+                    }
+
+                    if (enemy instanceof Monk
+                            && enemy.buff(PacifiedDropped.class) == null
+                            && !(Imp.Quest.isCompleted())) {
+                        Mob enemy0 = (Mob) enemy;
+                        Imp.Quest.process(enemy0);
+                        Buff.affect(enemy, PacifiedDropped.class);
+                    }
+
+                    if (enemy instanceof Golem
+                            && enemy.buff(PacifiedDropped.class) == null
+                            && !(Imp.Quest.isCompleted())) {
+                        Mob enemy0 = (Mob) enemy;
+                        Imp.Quest.process(enemy0);
+                        Buff.affect(enemy, PacifiedDropped.class);
+                    }
+
+					enemy.sprite.turnTo( enemy.pos, Dungeon.hero.pos );
+
+					int newPos = -1;
+					for (int i = 0; i < 10; i++) {
+						newPos = Dungeon.level.randomRespawnCell();
+						if (newPos != -1) {
+							break;
+						}
+					}
+					if (newPos != -1) {
+
+						CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+						enemy.pos = newPos;
+						enemy.sprite.place(enemy.pos);
+						enemy.sprite.visible = Dungeon.level.heroFOV[enemy.pos];
+					}
+				}
+				break;
 		default:
 		}
 
@@ -978,19 +1092,73 @@ public class Hero extends Char {
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-		
-		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
+
+		if (damage > 0 && subClass == HeroSubClass.BERSERKER) {
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
-		
+
 		if (belongings.armor != null) {
-			damage = belongings.armor.proc( enemy, this, damage );
+			damage = belongings.armor.proc(enemy, this, damage);
 		}
-		
-		Earthroot.Armor armor = buff( Earthroot.Armor.class );
+
+		Earthroot.Armor armor = buff(Earthroot.Armor.class);
 		if (armor != null) {
-			damage = armor.absorb( damage );
+			damage = armor.absorb(damage);
+		}
+
+		Pilgrim pilgrim = buff(Pilgrim.class);
+
+		if (hero.subClass == HeroSubClass.PILGRIM) {
+			int pilgrimChance = pilgrim.stacks();
+			if (pilgrimChance > 8)
+				pilgrimChance = 8;
+			if (pilgrim != null && pilgrim.stacks() >= 0
+                && hero.HP <= hero.HT/4
+                && hero.buff(PilgrimPunish.class) == null) {
+			if (Random.Float(10) < pilgrimChance) {
+				Buff.affect(enemy, Blindness.class, 4);
+				enemy.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
+
+				GLog.p(Messages.get(this, "def_pilgrim"));
+
+				if (!enemy.properties().contains(Char.Property.IMMOVABLE)) {
+				int startDist = Dungeon.level.distance(hero.pos, enemy.pos);
+
+				HashMap<Integer, ArrayList<Integer>> positions = new HashMap<>();
+
+				for (int pos = 0; pos < Dungeon.level.length(); pos++){
+					if (Dungeon.level.heroFOV[pos]
+							&& Dungeon.level.passable[pos]
+							&& Actor.findChar(pos) == null){
+
+						int dist = Dungeon.level.distance(enemy.pos, pos);
+						if (dist > startDist){
+							if (positions.get(dist) == null){
+								positions.put(dist, new ArrayList<Integer>());
+							}
+							positions.get(dist).add(pos);
+						}
+
+					}
+				}
+
+				float[] probs = new float[4];
+
+				for (int i = 0; i <= 3; i++){
+					if (positions.get(i) != null){
+						probs[i] = i - startDist;
+					}
+				}
+
+				int chosenDist = Random.chances(probs);
+
+				if (chosenDist != -1){
+					int pos = positions.get(chosenDist).get(Random.index(positions.get(chosenDist)));
+					ScrollOfTeleportation.appear( enemy, pos );
+					Dungeon.level.press( pos, enemy );
+				}
+			} } }
 		}
 		
 		return damage;
@@ -1021,7 +1189,19 @@ public class Hero extends Char {
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= AntiMagic.drRoll(belongings.armor.level());
+			dmg -= Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax())/3;
+		}
+
+		if ((hero.subClass == HeroSubClass.CRUSADER)
+				&& AntiMagic.RESISTS.contains(src.getClass())){
+			int cursaderResist = dmg - (hero.lvl/2);
+			int maxResist = 7*(dmg/10);
+			if (cursaderResist >= maxResist) {
+				dmg *= 0.7;
+			} else dmg = cursaderResist;
+			hero.sprite.showStatus( CharSprite.CLERIC, Messages.get(this, "def_crusader"));
+			hero.sprite.centerEmitter().burst( RainbowParticle.BURST, 10 );
+			Sample.INSTANCE.play( Assets.SND_BLAST );
 		}
 
 		super.damage( dmg, src );
@@ -1072,8 +1252,6 @@ public class Hero extends Char {
 		return visibleEnemies.get(index % visibleEnemies.size());
 	}
 	
-	private boolean walkingToVisibleTrapInFog = false;
-	
 	private boolean getCloser( final int target ) {
 
 		if (target == pos)
@@ -1102,11 +1280,6 @@ public class Hero extends Char {
 				}
 				if (Dungeon.level.passable[target] || Dungeon.level.avoid[target]) {
 					step = target;
-				}
-				if (walkingToVisibleTrapInFog
-						&& Dungeon.level.traps.get(target) != null
-						&& Dungeon.level.traps.get(target).visible){
-					return false;
 				}
 			}
 			
@@ -1231,13 +1404,6 @@ public class Hero extends Char {
 			
 		} else  {
 			
-			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
-					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible) {
-				walkingToVisibleTrapInFog = true;
-			} else {
-				walkingToVisibleTrapInFog = false;
-			}
-			
 			curAction = new HeroAction.Move( cell );
 			lastAction = null;
 			
@@ -1262,7 +1428,7 @@ public class Hero extends Char {
 		
 		Berserk berserk = buff(Berserk.class);
 		if (berserk != null) berserk.recover(percent);
-		
+
 		if (source != PotionOfExperience.class) {
 			for (Item i : belongings) {
 				i.onHeroGainExp(percent, this);
@@ -1435,9 +1601,9 @@ public class Hero extends Char {
 		Dungeon.observe();
 		GameScene.updateFog();
 				
-		Dungeon.hero.belongings.identify();
+		hero.belongings.identify();
 
-		int pos = Dungeon.hero.pos;
+		int pos = hero.pos;
 
 		ArrayList<Integer> passable = new ArrayList<Integer>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
@@ -1448,7 +1614,7 @@ public class Hero extends Char {
 		}
 		Collections.shuffle( passable );
 
-		ArrayList<Item> items = new ArrayList<Item>( Dungeon.hero.belongings.backpack.items );
+		ArrayList<Item> items = new ArrayList<Item>( hero.belongings.backpack.items );
 		for (Integer cell : passable) {
 			if (items.isEmpty()) {
 				break;
@@ -1507,15 +1673,16 @@ public class Hero extends Char {
 
 		if (subClass == HeroSubClass.GLADIATOR){
 			if (hit) {
-				Buff.affect( this, Combo.class ).hit( enemy );
+				Buff.affect( this, Combo.class ).hit();
 			} else {
 				Combo combo = buff(Combo.class);
-				if (combo != null) combo.miss( enemy );
+				if (combo != null) combo.miss();
 			}
 		}
 		
 		Invisibility.dispel();
 		spend( attackDelay() );
+		Buff.detach(hero, Duel.class);
 
 		curAction = null;
 
@@ -1559,6 +1726,7 @@ public class Hero extends Char {
 		}
 		curAction = null;
 
+		Buff.detach(hero, Duel.class);
 		super.onOperateComplete();
 	}
 	

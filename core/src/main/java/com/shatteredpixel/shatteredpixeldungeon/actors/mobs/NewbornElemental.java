@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PacifiedDropped;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NewbornElementalSprite;
 
@@ -54,7 +55,8 @@ public class NewbornElemental extends Elemental {
 
 	@Override
 	public void die(Object cause) {
+		if (!(this.buff(PacifiedDropped.class) == null)) {
 		super.die(cause);
-		Dungeon.level.drop( new Embers(), pos ).sprite.drop();
+		Dungeon.level.drop( new Embers(), pos ).sprite.drop(); }
 	}
 }

@@ -33,9 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTiledVisual;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -95,25 +94,24 @@ public class MassGraveRoom extends SpecialRoom {
 		}
 	}
 
-	public static class Bones extends CustomTilemap {
+	public static class Bones extends CustomTiledVisual {
 
 		private static final int WALL_OVERLAP   = 3;
 		private static final int FLOOR          = 7;
 
-		{
-			texture = Assets.PRISON_QUEST;
+		public Bones(){
+			super(Assets.PRISON_QUEST);
 		}
 
 		@Override
-		public Tilemap create() {
-			Tilemap v = super.create();
-			int[] data = new int[tileW*tileH];
+		public CustomTiledVisual create() {
+			int data[] = new int[tileW*tileH];
 			for (int i = 0; i < data.length; i++){
 				if (i < tileW)  data[i] = WALL_OVERLAP;
 				else            data[i] = FLOOR;
 			}
-			v.map( data, tileW );
-			return v;
+			map( data, tileW );
+			return super.create();
 		}
 
 		@Override

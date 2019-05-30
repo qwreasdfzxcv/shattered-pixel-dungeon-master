@@ -44,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -181,8 +180,8 @@ public class Yog extends Mob {
 	}
 	
 	{
+		
 		immunities.add( Grim.class );
-		immunities.add( GrimTrap.class );
 		immunities.add( Terror.class );
 		immunities.add( Amok.class );
 		immunities.add( Charm.class );
@@ -311,9 +310,6 @@ public class Yog extends Mob {
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		}
 		
-		//used so resistances can differentiate between melee and magical attacks
-		public static class DarkBolt{}
-		
 		@Override
 		public boolean attack( Char enemy ) {
 			
@@ -323,7 +319,7 @@ public class Yog extends Mob {
 				if (hit( this, enemy, true )) {
 					
 					int dmg =  damageRoll();
-					enemy.damage( dmg, new DarkBolt() );
+					enemy.damage( dmg, this );
 					
 					enemy.sprite.bloodBurstA( sprite.center(), dmg );
 					enemy.sprite.flash();

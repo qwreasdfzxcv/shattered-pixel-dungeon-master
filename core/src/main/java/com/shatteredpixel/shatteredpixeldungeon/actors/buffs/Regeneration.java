@@ -43,11 +43,13 @@ public class Regeneration extends Buff {
 				LockedFloor lock = target.buff(LockedFloor.class);
 				if (target.HP > 0 && (lock == null || lock.regenOn())) {
 					target.HP += 1;
+
 					if (target.HP == regencap()) {
 						((Hero) target).resting = false;
 					}
 				}
 			}
+
 
 			ChaliceOfBlood.chaliceRegen regenBuff = Dungeon.hero.buff( ChaliceOfBlood.chaliceRegen.class);
 
@@ -56,8 +58,13 @@ public class Regeneration extends Buff {
 					spend( REGENERATION_DELAY * 1.5f );
 				else
 					spend( REGENERATION_DELAY - regenBuff.itemLevel()*0.9f );
-			else
-				spend( REGENERATION_DELAY );
+			else {
+				Pilgrim pilgrim = target.buff(Pilgrim.class);
+				PilgrimPunish punish = target.buff(PilgrimPunish.class);
+				if (pilgrim != null && punish == null){
+					spend( REGENERATION_DELAY - pilgrim.regenBonus()*0.9f );
+				} else spend(REGENERATION_DELAY);
+			}
 			
 		} else {
 			

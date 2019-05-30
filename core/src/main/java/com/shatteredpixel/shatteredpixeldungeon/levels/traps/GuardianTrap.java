@@ -71,6 +71,8 @@ public class GuardianTrap extends Trap {
 
 			EXP = 0;
 			state = WANDERING;
+
+			properties.add(Property.NONPACIFIED);
 		}
 
 		public Guardian(){

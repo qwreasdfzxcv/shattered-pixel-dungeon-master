@@ -29,6 +29,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_blasting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_brightning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_chilly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_corrosive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_destructive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_dooming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_firey;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_herbral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_protective;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_shocking;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.CorrosionParticle;
@@ -60,8 +71,23 @@ public class WandOfCorrosion extends Wand {
 		for (int i : PathFinder.NEIGHBOURS9) {
 			Char ch = Actor.findChar(bolt.collisionPos + i);
 			if (ch != null) {
+				if (ch.properties().contains(Char.Property.SUMMONED)) {
+					ch.sprite.burst( 0xFF8800, 4 );
+					ch.sprite.flash();
+					Buff.affect(ch, Summoned_corrosive.class);
+					Buff.detach(ch, Summoned_chilly.class);
+					Buff.detach(ch, Summoned_dooming.class);
+					Buff.detach(ch, Summoned_destructive.class);
+					Buff.detach(ch, Summoned_energized.class);
+					Buff.detach(ch, Summoned_firey.class);
+					Buff.detach(ch, Summoned_herbral.class);
+					Buff.detach(ch, Summoned_protective.class);
+					Buff.detach(ch, Summoned_shocking.class);
+					Buff.detach(ch, Summoned_blasting.class);
+					Buff.detach(ch, Summoned_brightning.class);
+				} else {
 				processSoulMark(ch, chargesPerCast());
-			}
+			} }
 		}
 		
 		if (Actor.findChar(bolt.collisionPos) == null){

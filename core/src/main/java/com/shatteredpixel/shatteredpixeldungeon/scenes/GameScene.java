@@ -56,7 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTiledVisual;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -211,7 +211,7 @@ public class GameScene extends PixelScene {
 		customTiles = new Group();
 		terrain.add(customTiles);
 
-		for( CustomTilemap visual : Dungeon.level.customTiles){
+		for( CustomTiledVisual visual : Dungeon.level.customTiles){
 			addCustomTile(visual);
 		}
 
@@ -256,7 +256,7 @@ public class GameScene extends PixelScene {
 		customWalls = new Group();
 		add(customWalls);
 
-		for( CustomTilemap visual : Dungeon.level.customWalls){
+		for( CustomTiledVisual visual : Dungeon.level.customWalls){
 			addCustomWall(visual);
 		}
 
@@ -611,11 +611,11 @@ public class GameScene extends PixelScene {
 		}
 	}
 
-	public void addCustomTile( CustomTilemap visual){
+	public void addCustomTile( CustomTiledVisual visual){
 		customTiles.add( visual.create() );
 	}
 
-	public void addCustomWall( CustomTilemap visual){
+	public void addCustomWall( CustomTiledVisual visual){
 		customWalls.add( visual.create() );
 	}
 	

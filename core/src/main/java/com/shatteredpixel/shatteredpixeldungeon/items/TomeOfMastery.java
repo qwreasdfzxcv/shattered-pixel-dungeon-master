@@ -67,25 +67,35 @@ public class TomeOfMastery extends Item {
 			
 			HeroSubClass way1 = null;
 			HeroSubClass way2 = null;
+			HeroSubClass way3 = null;
 			switch (hero.heroClass) {
 			case WARRIOR:
 				way1 = HeroSubClass.GLADIATOR;
 				way2 = HeroSubClass.BERSERKER;
+				way3 = HeroSubClass.BULWARK;
 				break;
 			case MAGE:
 				way1 = HeroSubClass.BATTLEMAGE;
 				way2 = HeroSubClass.WARLOCK;
+				way3 = HeroSubClass.SUMMONER;
 				break;
 			case ROGUE:
 				way1 = HeroSubClass.FREERUNNER;
 				way2 = HeroSubClass.ASSASSIN;
+				way3 = HeroSubClass.DUELIST;
 				break;
 			case HUNTRESS:
 				way1 = HeroSubClass.SNIPER;
 				way2 = HeroSubClass.WARDEN;
+				way3 = HeroSubClass.SPIRITWALKER;
+				break;
+			case CLERIC:
+				way1 = HeroSubClass.CRUSADER;
+				way2 = HeroSubClass.SCHOLAR;
+				way3 = HeroSubClass.PILGRIM;
 				break;
 			}
-			GameScene.show( new WndChooseWay( this, way1, way2 ) );
+			GameScene.show( new WndChooseWay( this, way1, way2, way3 ) );
 			
 		}
 	}

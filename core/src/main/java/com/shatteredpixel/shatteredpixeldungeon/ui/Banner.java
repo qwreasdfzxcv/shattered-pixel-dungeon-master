@@ -78,10 +78,8 @@ public class Banner extends Image {
 				alpha( 1 - p );
 				break;
 			case STATIC:
-				resetColor();
 				break;
 			case FADE_OUT:
-				resetColor();
 				alpha( p );
 				break;
 			}

@@ -93,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlad
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DamagedShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
@@ -154,7 +155,7 @@ public enum Catalog {
 		WEAPONS.seen.put( Gloves.class,                     false);
 		WEAPONS.seen.put( Dagger.class,                     false);
 		WEAPONS.seen.put( MagesStaff.class,                 false);
-		//WEAPONS.seen.put( Boomerang.class,                  false);
+		WEAPONS.seen.put(DamagedShield.class,               false);
 		WEAPONS.seen.put( Shortsword.class,                 false);
 		WEAPONS.seen.put( HandAxe.class,                    false);
 		WEAPONS.seen.put( Spear.class,                      false);
@@ -336,7 +337,12 @@ public enum Catalog {
 		if (bundle.contains(CATALOGS)) {
 			List<String> seen = Arrays.asList(bundle.getStringArray(CATALOGS));
 			
+			//pre-0.6.3 saves
 			//TODO should adjust this to tie into the bundling system's class array
+			if (seen.contains("WandOfVenom")){
+				WANDS.seen.put(WandOfCorrosion.class, true);
+			}
+			
 			for (Catalog cat : values()) {
 				for (Class<? extends Item> item : cat.items()) {
 					if (seen.contains(item.getSimpleName())) {

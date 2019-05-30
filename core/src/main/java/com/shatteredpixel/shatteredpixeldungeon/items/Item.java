@@ -27,9 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -129,6 +131,9 @@ public class Item implements Bundlable {
 		
 		curUser = hero;
 		curItem = this;
+
+		Combo combo = hero.buff(Combo.class);
+		if (combo != null) combo.detach();
 		
 		if (action.equals( AC_DROP )) {
 			
@@ -245,7 +250,7 @@ public class Item implements Bundlable {
 		} else
 		if (quantity == 1) {
 
-			if (stackable){
+			if (stackable || this instanceof Boomerang){
 				Dungeon.quickslot.convertToPlaceholder(this);
 			}
 
@@ -331,7 +336,7 @@ public class Item implements Bundlable {
 	}
 	
 	public int visiblyUpgraded() {
-		return levelKnown ? level() : 0;
+		return levelKnown ? level : 0;
 	}
 	
 	public boolean visiblyCursed() {
@@ -369,6 +374,8 @@ public class Item implements Bundlable {
 	public static void evoke( Hero hero ) {
 		hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 	}
+
+	public void PilgrimPass() {}
 	
 	@Override
 	public String toString() {

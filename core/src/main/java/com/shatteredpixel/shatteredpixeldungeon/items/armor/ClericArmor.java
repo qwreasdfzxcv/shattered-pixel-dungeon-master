@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Pacified;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -44,7 +45,7 @@ public class ClericArmor extends ClassArmor {
     public void doSpecial() {
 
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-            if (Dungeon.level.heroFOV[mob.pos]) {
+            if (Dungeon.level.heroFOV[mob.pos] && mob.buff(Pacified.class) == null) {
                 Buff.prolong( mob, Blindness.class, 8f);
                 int oppositeHero = mob.pos + (mob.pos - curUser.pos);
                 Ballistica trajectory = new Ballistica(mob.pos, oppositeHero, Ballistica.MAGIC_BOLT);

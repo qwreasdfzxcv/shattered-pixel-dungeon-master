@@ -143,6 +143,11 @@ public class HallsBossLevel extends Level {
 	}
 	
 	@Override
+	public Mob createMob() {
+		return null;
+	}
+	
+	@Override
 	protected void createMobs() {
 	}
 	

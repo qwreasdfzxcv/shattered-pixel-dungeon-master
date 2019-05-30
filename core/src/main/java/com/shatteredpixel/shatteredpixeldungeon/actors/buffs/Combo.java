@@ -71,7 +71,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Messages.get(this, "name");
 	}
 	
-	public void hit( Char enemy ) {
+	public void hit() {
 		
 		count++;
 		comboTime = 4f;
@@ -89,7 +89,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	}
 
-	public void miss( Char enemy ){
+	public void miss(){
 		misses++;
 		comboTime = 4f;
 		if (misses >= 2){
@@ -218,12 +218,15 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					dmg = Math.round(dmg*1.5f);
 					break;
 				case SLAM:
-					dmg += target.drRoll();
+					//rolls 2 times, takes the highest roll
+					int dmgReroll = target.damageRoll();
+					if (dmgReroll > dmg) dmg = dmgReroll;
+					dmg = Math.round(dmg*1.6f);
 					break;
 				case CRUSH:
 					//rolls 4 times, takes the highest roll
 					for (int i = 1; i < 4; i++) {
-						int dmgReroll = target.damageRoll();
+						dmgReroll = target.damageRoll();
 						if (dmgReroll > dmg) dmg = dmgReroll;
 					}
 					dmg = Math.round(dmg*2.5f);
@@ -296,8 +299,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case CLEAVE:
 					if (!enemy.isAlive()) {
 						//combo isn't reset, but rather increments with a cleave kill, and grants more time.
-						hit( enemy );
-						comboTime = 12f;
+						hit();
+						comboTime = 10f;
 					} else {
 						detach();
 						ActionIndicator.clearAction(Combo.this);

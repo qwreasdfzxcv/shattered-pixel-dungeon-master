@@ -158,10 +158,12 @@ public class Tengu extends Mob {
 	//tengu's attack is always visible
 	@Override
 	protected boolean doAttack(Char enemy) {
+		if (enemy == Dungeon.hero)
+			Dungeon.hero.resting = false;
 		sprite.attack( enemy.pos );
 		spend( attackDelay() );
-		return false;
-	}
+		return !Dungeon.level.adjacent(pos, enemy.pos);
+}
 
 	private void jump() {
 		

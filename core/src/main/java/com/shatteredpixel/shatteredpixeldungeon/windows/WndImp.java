@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
@@ -48,7 +49,25 @@ public class WndImp extends Window {
 		titlebar.label( Messages.titleCase( tokens.name() ) );
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
-		
+
+		if (Dungeon.hero.heroClass == HeroClass.CLERIC){
+			RenderedTextMultiline message = PixelScene.renderMultiline( Messages.get(this, "message_cleric"), 6 );
+			message.maxWidth(WIDTH);
+			message.setPos(0, titlebar.bottom() + GAP);
+			add( message );
+
+			RedButton btnReward = new RedButton( Messages.get(this, "reward") ) {
+				@Override
+				protected void onClick() {
+					takeReward( imp, tokens, Imp.Quest.reward );
+				}
+			};
+			btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
+			add( btnReward );
+
+			resize( WIDTH, (int)btnReward.bottom() );
+		}
+		else {
 		RenderedTextMultiline message = PixelScene.renderMultiline( Messages.get(this, "message"), 6 );
 		message.maxWidth(WIDTH);
 		message.setPos(0, titlebar.bottom() + GAP);
@@ -63,7 +82,7 @@ public class WndImp extends Window {
 		btnReward.setRect( 0, message.top() + message.height() + GAP, WIDTH, BTN_HEIGHT );
 		add( btnReward );
 		
-		resize( WIDTH, (int)btnReward.bottom() );
+		resize( WIDTH, (int)btnReward.bottom() );}
 	}
 	
 	private void takeReward( Imp imp, DwarfToken tokens, Item reward ) {

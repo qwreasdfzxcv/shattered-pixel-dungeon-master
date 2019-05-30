@@ -29,6 +29,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_blasting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_brightning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_chilly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_corrosive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_destructive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_dooming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_firey;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_herbral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_protective;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_shocking;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -65,7 +76,21 @@ public class WandOfFrost extends DamageWand {
 		if (ch != null){
 
 			int damage = damageRoll();
-
+			if (ch.properties().contains(Char.Property.SUMMONED)) {
+				ch.sprite.burst( 0xFF99CCFF, 4 );
+				ch.sprite.flash();
+				Buff.affect(ch, Summoned_chilly.class);
+				Buff.detach(ch, Summoned_corrosive.class);
+				Buff.detach(ch, Summoned_destructive.class);
+				Buff.detach(ch, Summoned_dooming.class);
+				Buff.detach(ch, Summoned_energized.class);
+				Buff.detach(ch, Summoned_firey.class);
+				Buff.detach(ch, Summoned_herbral.class);
+				Buff.detach(ch, Summoned_protective.class);
+				Buff.detach(ch, Summoned_shocking.class);
+				Buff.detach(ch, Summoned_blasting.class);
+				Buff.detach(ch, Summoned_brightning.class);
+			} else {
 			if (ch.buff(Frost.class) != null){
 				return; //do nothing, can't affect a frozen target
 			}
@@ -85,7 +110,7 @@ public class WandOfFrost extends DamageWand {
 					Buff.prolong(ch, Chill.class, 4+level());
 				else
 					Buff.prolong(ch, Chill.class, 2+level());
-			}
+			} }
 		} else {
 			Dungeon.level.press(bolt.collisionPos, null, true);
 		}

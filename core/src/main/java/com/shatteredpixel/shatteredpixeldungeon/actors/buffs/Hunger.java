@@ -125,6 +125,12 @@ public class Hunger extends Buff implements Hero.Doom {
 			GLog.n( Messages.get(this, "cursedhorn") );
 		}
 
+		Pilgrim pilgrim = target.buff(Pilgrim.class);
+		PilgrimPunish punish = target.buff(PilgrimPunish.class);
+		if (pilgrim != null && punish == null){
+			energy /= pilgrim.hungerBonus();
+		}
+
 		reduceHunger( energy );
 	}
 

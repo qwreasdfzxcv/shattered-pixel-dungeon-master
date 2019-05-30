@@ -49,6 +49,7 @@ public class Piranha extends Mob {
 		HUNTING = new Hunting();
 		
 		properties.add(Property.BLOB_IMMUNE);
+		properties.add(Property.NONPACIFIED);
 	}
 	
 	public Piranha() {

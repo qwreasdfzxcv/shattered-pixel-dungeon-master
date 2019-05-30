@@ -53,6 +53,7 @@ public class Mimic extends Mob {
 		spriteClass = MimicSprite.class;
 
 		properties.add(Property.DEMONIC);
+		properties.add(Property.NONPACIFIED);
 	}
 	
 	public ArrayList<Item> items;

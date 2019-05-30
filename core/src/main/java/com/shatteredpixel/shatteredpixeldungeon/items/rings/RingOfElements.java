@@ -48,9 +48,9 @@ public class RingOfElements extends Ring {
 	
 	public String statsInfo() {
 		if (isIdentified()){
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.80f, soloBonus()))));
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.84f, soloBonus()))));
 		} else {
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(20f));
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(16f));
 		}
 	}
 	
@@ -77,10 +77,11 @@ public class RingOfElements extends Ring {
 		RESISTS.add( ToxicGas.class );
 		RESISTS.add( Electricity.class );
 		
-		RESISTS.add( Shaman.LightningBolt.class );
-		RESISTS.add( Warlock.DarkBolt.class );
-		RESISTS.add( Eye.DeathGaze.class );
-		RESISTS.add( Yog.BurningFist.DarkBolt.class );
+		//FIXME currently this affects all attacks, not just longranged magic
+		RESISTS.add( Shaman.class );
+		RESISTS.add( Warlock.class );
+		RESISTS.add( Eye.class );
+		RESISTS.add( Yog.BurningFist.class );
 	}
 	
 	public static float resist( Char target, Class effect ){
@@ -88,7 +89,7 @@ public class RingOfElements extends Ring {
 		
 		for (Class c : RESISTS){
 			if (c.isAssignableFrom(effect)){
-				return (float)Math.pow(0.80, getBonus(target, Resistance.class));
+				return (float)Math.pow(0.84, getBonus(target, Resistance.class));
 			}
 		}
 		

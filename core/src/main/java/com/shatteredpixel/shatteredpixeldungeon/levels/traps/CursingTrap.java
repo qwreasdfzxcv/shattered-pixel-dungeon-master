@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -76,7 +77,7 @@ public class CursingTrap extends Trap {
 		ArrayList<Item> canCurse = new ArrayList<>();
 
 		KindOfWeapon weapon = hero.belongings.weapon;
-		if (weapon instanceof Weapon && !weapon.cursed){
+		if (weapon instanceof Weapon && !weapon.cursed && !(weapon instanceof Boomerang)){
 			if (((Weapon) weapon).enchantment == null)
 				priorityCurse.add(weapon);
 			else
@@ -124,13 +125,13 @@ public class CursingTrap extends Trap {
 		if (item instanceof Weapon){
 			Weapon w = (Weapon) item;
 			if (w.enchantment == null){
-				w.enchant(Weapon.Enchantment.randomCurse());
+				w.enchantment = Weapon.Enchantment.randomCurse();
 			}
 		}
 		if (item instanceof Armor){
 			Armor a = (Armor) item;
 			if (a.glyph == null){
-				a.inscribe(Armor.Glyph.randomCurse());
+				a.glyph = Armor.Glyph.randomCurse();
 			}
 		}
 	}

@@ -26,6 +26,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_blasting;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_brightning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_chilly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_corrosive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_destructive;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_dooming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_energized;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_firey;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_herbral;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_protective;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Summoned.Summoned_shocking;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Summoned;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -51,10 +63,25 @@ public class WandOfMagicMissile extends DamageWand {
 		Char ch = Actor.findChar( bolt.collisionPos );
 		if (ch != null) {
 
+			if (ch.properties().contains(Char.Property.SUMMONED)) {
+				SpellSprite.show(ch, SpellSprite.CHARGE);
+				ch.sprite.flash();
+				Buff.affect(ch, Summoned_energized.class);
+				Buff.detach(ch, Summoned_corrosive.class);
+				Buff.detach(ch, Summoned_chilly.class);
+				Buff.detach(ch, Summoned_shocking.class);
+				Buff.detach(ch, Summoned_firey.class);
+				Buff.detach(ch, Summoned_herbral.class);
+				Buff.detach(ch, Summoned_protective.class);
+				Buff.detach(ch, Summoned_destructive.class);
+				Buff.detach(ch, Summoned_blasting.class);
+				Buff.detach(ch, Summoned_dooming.class);
+				Buff.detach(ch, Summoned_brightning.class);
+			} else {
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 
-			ch.sprite.burst(0xFFFFFFFF, level() / 2 + 2);
+			ch.sprite.burst(0xFFFFFFFF, level() / 2 + 2); }
 
 		} else {
 			Dungeon.level.press(bolt.collisionPos, null, true);

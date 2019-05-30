@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class Buff extends Actor {
-	
+
 	public Char target;
 
 	{
@@ -41,28 +41,28 @@ public class Buff extends Actor {
 	//determines how the buff is announced when it is shown.
 	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL};
 	public buffType type = buffType.NEUTRAL;
-	
+
 	//whether or not the buff announces its name
 	public boolean announced = false;
-	
+
 	protected HashSet<Class> resistances = new HashSet<>();
-	
+
 	public HashSet<Class> resistances() {
 		return new HashSet<>(resistances);
 	}
-	
+
 	protected HashSet<Class> immunities = new HashSet<>();
-	
+
 	public HashSet<Class> immunities() {
 		return new HashSet<>(immunities);
 	}
-	
+
 	public boolean attachTo( Char target ) {
 
 		if (target.isImmune( getClass() )) {
 			return false;
 		}
-		
+
 		this.target = target;
 		target.add( this );
 
@@ -74,22 +74,22 @@ public class Buff extends Actor {
 			return false;
 		}
 	}
-	
+
 	public void detach() {
 		if (target.sprite != null) fx( false );
 		target.remove( this );
 	}
-	
+
 	@Override
 	public boolean act() {
 		diactivate();
 		return true;
 	}
-	
+
 	public int icon() {
 		return BuffIndicator.NONE;
 	}
-	
+
 	public void tintIcon( Image icon ){
 		//do nothing by default
 	}
@@ -138,7 +138,7 @@ public class Buff extends Actor {
 			return append( target, buffClass );
 		}
 	}
-	
+
 	public static<T extends FlavourBuff> T affect( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
 		buff.spend( duration * target.resist(buffClass) );
@@ -151,13 +151,13 @@ public class Buff extends Actor {
 		buff.postpone( duration * target.resist(buffClass) );
 		return buff;
 	}
-	
+
 	public static void detach( Buff buff ) {
 		if (buff != null) {
 			buff.detach();
 		}
 	}
-	
+
 	public static void detach( Char target, Class<? extends Buff> cl ) {
 		detach( target.buff( cl ) );
 	}
