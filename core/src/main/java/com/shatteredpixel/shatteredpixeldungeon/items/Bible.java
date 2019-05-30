@@ -380,23 +380,10 @@ public class Bible extends Item {
                     hero.sprite.showStatus( CharSprite.CLERIC,  Messages.get(this, "cleanse_ready"));
                 } if (charge == 5){
                     hero.sprite.showStatus( CharSprite.CLERIC,  Messages.get(this, "divine_shield_ready"));
-                } if (charge == 8 && Dungeon.hero.subClass != HeroSubClass.PILGRIM){
-                    hero.sprite.showStatus( CharSprite.CLERIC,  Messages.get(this, "judgment_ready"));
                 } if (charge == 1 && Dungeon.hero.subClass == HeroSubClass.SCHOLAR){
                     hero.sprite.showStatus( CharSprite.CLERIC,  Messages.get(this, "guardian_spirit_ready"));
                 } if (charge == 2 && Dungeon.hero.subClass == HeroSubClass.SCHOLAR){
                     hero.sprite.showStatus( CharSprite.CLERIC,  Messages.get(this, "aura_of_healing_ready"));
-                } if (Dungeon.hero.subClass == HeroSubClass.PILGRIM) {
-                    Pilgrim pilgrim = hero.buff(Pilgrim.class);
-                    PilgrimPunish punish = hero.buff(PilgrimPunish.class);
-                    if (charge == pilgrim.peaceCost()
-                            && pilgrim.peaceCost() > 0) {
-                        if (punish == null) {
-                            hero.sprite.showStatus(CharSprite.CLERIC, Messages.get(this, "peace_ready"));
-                        } else if (charge == 8) {
-                            hero.sprite.showStatus(CharSprite.CLERIC, Messages.get(this, "peace_ready"));
-                        }
-                    }
                 }
             }
         }
