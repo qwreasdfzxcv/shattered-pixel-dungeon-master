@@ -17,19 +17,26 @@ public class WndLogin extends Window {
 
         super();
 
-        RenderedTextMultiline form = PixelScene.renderMultiline( 6 );
-        form.text( Messages.get(this, "id") + "\n\n" + "" + "\n\n" + Messages.get(this, "pwd") + "\n\n" + "", WIDTH );
-        add( form );
+        RenderedTextMultiline form1 = PixelScene.renderMultiline( 6 );
+        RenderedTextMultiline form2 = PixelScene.renderMultiline( 6 );
+
+        form1.text( Messages.get(this, "id"), WIDTH );
+        form1.setPos(1, 1);
+        add( form1 );
+
+        form2.text( Messages.get(this, "pwd"), WIDTH );
+        form2.setPos(1, 29);
+        add( form2 );
 
         RedButton btnSignIn = new RedButton( Messages.get(this, "sign_in"));
         btnSignIn.setSize(WIDTH/2-GAP, BTN_HEIGHT);
         btnSignIn.setPos(1, 61);
         add( btnSignIn );
 
-        RedButton btnSignUp = new RedButton( Messages.get(this, "sign_up"));
-        btnSignUp.setSize(WIDTH/2-GAP, BTN_HEIGHT);
-        btnSignUp.setPos(61, 61);
-        add( btnSignUp );
+        RedButton btnRegister = new RedButton( Messages.get(this, "register"));
+        btnRegister.setSize(WIDTH/2-GAP, BTN_HEIGHT);
+        btnRegister.setPos(61, 61);
+        add( btnRegister );
 
         resize(WIDTH, HEIGHT);
     }
