@@ -10,5 +10,5 @@ public class WndUploadScore extends Window {
     private static final int MARGIN 		= 2;
     private static final int BUTTON_HEIGHT	= 20;
 
-    public WndQuestion
+
 }
