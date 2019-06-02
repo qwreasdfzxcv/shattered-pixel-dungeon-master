@@ -3,8 +3,8 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.noosa.RenderedText;
 
 public class WndUploadScore extends Window {
     private static final int WIDTH      = 120;
@@ -17,8 +17,9 @@ public class WndUploadScore extends Window {
 
         super();
 
-        RenderedText form = PixelScene.renderText( 10 );
-        form.text( Messages.get(this, "upload_question"));
+        RenderedTextMultiline form = PixelScene.renderMultiline( 6 );
+        form.text( Messages.get(this, "upload_question"), WIDTH);
+        form.setPos(1, 1);
         add( form );
 
         RedButton btnYes = new RedButton( Messages.get(this, "upload_yes"));
