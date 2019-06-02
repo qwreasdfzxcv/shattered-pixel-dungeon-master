@@ -73,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUploadScore;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -743,6 +744,8 @@ public class Dungeon {
 		if (chCount != 0) {
 			Badges.validateChampion(chCount);
 		}
+
+		GameScene.show( new WndUploadScore());
 
 		Rankings.INSTANCE.submit( true, cause );
 	}
