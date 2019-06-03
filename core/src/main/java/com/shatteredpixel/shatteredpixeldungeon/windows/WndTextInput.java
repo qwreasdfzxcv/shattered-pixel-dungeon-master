@@ -51,7 +51,7 @@ public class WndTextInput extends Window {
 	private EditText textInput2;
 
 	private static final int WIDTH 			= 120;
-	private static final int HEIGHT			= 81;
+	private static final int HEIGHT			= 83;
 	private static final int W_LAND_MULTI 	= 200; //in the specific case of multiline in landscape
 	private static final int MARGIN 		= 2;
 	private static final int BUTTON_HEIGHT	= 16;
@@ -105,6 +105,12 @@ public class WndTextInput extends Window {
 				textInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 				textInput.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
 
+				textInput2 = new EditText(ShatteredPixelDungeon.instance);
+				textInput2.setText( initialValue2 );
+				textInput2.setTypeface( RenderedText.getFont() );
+				textInput2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+				textInput2.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
+
 				//this accounts for the game resolution differing from the display resolution in power saver mode
 				final float scaledZoom;
 				scaledZoom = camera.zoom * (Game.dispWidth / (float)Game.width);
@@ -114,8 +120,10 @@ public class WndTextInput extends Window {
 				if (multiLine) {
 
 					textInput.setSingleLine(false);
+					textInput2.setSingleLine(false);
 					//This is equivalent to PixelScene.renderText(6)
 					textInput.setTextSize( TypedValue.COMPLEX_UNIT_PX, 6*scaledZoom);
+					textInput2.setTextSize( TypedValue.COMPLEX_UNIT_PX, 6*scaledZoom);
 					//8 lines of text (+1 line for padding)
 					inputHeight = 9*textInput.getLineHeight() / scaledZoom;
 
@@ -123,23 +131,34 @@ public class WndTextInput extends Window {
 
 					//sets to single line and changes enter key input to be the same as the positive button
 					textInput.setSingleLine();
+					textInput2.setSingleLine();
+
 					textInput.setOnEditorActionListener( new EditText.OnEditorActionListener() {
 						@Override
 						public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 							onSelect(true);
-							hide();
+							return true;
+						}
+					});
+					textInput2.setOnEditorActionListener( new EditText.OnEditorActionListener() {
+						@Override
+						public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+							onSelect(true);
 							return true;
 						}
 					});
 
 					//doesn't let the keyboard take over the whole UI
 					textInput.setImeOptions( EditorInfo.IME_FLAG_NO_EXTRACT_UI );
+					textInput2.setImeOptions( EditorInfo.IME_FLAG_NO_EXTRACT_UI );
 
 					//centers text
 					textInput.setGravity(Gravity.CENTER);
+					textInput2.setGravity(Gravity.CENTER);
 
 					//This is equivalent to PixelScene.renderText(9)
 					textInput.setTextSize( TypedValue.COMPLEX_UNIT_PX, 9*scaledZoom);
+					textInput2.setTextSize( TypedValue.COMPLEX_UNIT_PX, 9*scaledZoom);
 					//1 line of text (+1 line for padding)
 					inputHeight = 2*textInput.getLineHeight() / scaledZoom;
 
@@ -152,7 +171,6 @@ public class WndTextInput extends Window {
 					@Override
 					protected void onClick() {
 						onSelect( true );
-						hide();
 					}
 				};
 				if (negTxt != null)
@@ -166,7 +184,6 @@ public class WndTextInput extends Window {
 						@Override
 						protected void onClick() {
 							onSelect( false );
-							hide();
 						}
 					};
 					negativeBtn.setRect( positiveBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
@@ -179,6 +196,7 @@ public class WndTextInput extends Window {
 				// resize the window first so we can know the screen-space coordinates for the text input.
 				resize( width, HEIGHT );
 				final int inputTop = (int)(camera.cameraToScreen(0, txtTitle1.bottom() + MARGIN).y * (Game.dispWidth / (float)Game.width));
+				final int inputTop2 = (int)(camera.cameraToScreen(0, txtTitle2.bottom() + MARGIN).y * (Game.dispWidth / (float)Game.width));
 
 				//The text input exists in a separate view ontop of the normal game view.
 				// It visually appears to be a part of the game window but is infact a separate
@@ -189,6 +207,13 @@ public class WndTextInput extends Window {
 						Gravity.CENTER_HORIZONTAL);
 				layout.setMargins(0, inputTop, 0, 0);
 				ShatteredPixelDungeon.instance.addContentView(textInput, layout);
+
+				FrameLayout.LayoutParams layout2 = new FrameLayout.LayoutParams(
+						(int)((width - MARGIN*2)*scaledZoom),
+						(int)(inputHeight * scaledZoom),
+						Gravity.CENTER_HORIZONTAL);
+				layout2.setMargins(0, inputTop2, 0, 0);
+				ShatteredPixelDungeon.instance.addContentView(textInput2, layout2);
 			}
 		});
 	}
@@ -197,26 +222,36 @@ public class WndTextInput extends Window {
 		return textInput.getText().toString().trim();
 	}
 
+	public String getText2(){
+		return textInput2.getText().toString().trim();
+	}
+
 	protected void onSelect( boolean positive ) {};
 
 	@Override
 	public void destroy() {
 		super.destroy();
-		if (textInput != null){
+		if (textInput != null && textInput2 != null){
 			ShatteredPixelDungeon.instance.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					//make sure we remove the edit text and soft keyboard
 					((ViewGroup) textInput.getParent()).removeView(textInput);
+					((ViewGroup) textInput2.getParent()).removeView(textInput2);
 
 					InputMethodManager imm = (InputMethodManager)ShatteredPixelDungeon
 									.instance.getSystemService(Activity.INPUT_METHOD_SERVICE);
+					InputMethodManager imm2 = (InputMethodManager)ShatteredPixelDungeon
+							.instance.getSystemService(Activity.INPUT_METHOD_SERVICE);
+
 					imm.hideSoftInputFromWindow(textInput.getWindowToken(), 0);
+					imm2.hideSoftInputFromWindow(textInput2.getWindowToken(), 0);
 
 					//Soft keyboard sometimes triggers software buttons, so make sure to reassert immersive
 					ShatteredPixelDungeon.updateSystemUI();
 
 					textInput = null;
+					textInput2 = null;
 				}
 			});
 		}
