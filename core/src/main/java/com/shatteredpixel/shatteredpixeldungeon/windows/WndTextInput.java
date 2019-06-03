@@ -51,7 +51,7 @@ public class WndTextInput extends Window {
 	private EditText textInput2;
 
 	private static final int WIDTH 			= 120;
-	private static final int HEIGHT			= 86;
+	private static final int HEIGHT			= 81;
 	private static final int W_LAND_MULTI 	= 200; //in the specific case of multiline in landscape
 	private static final int MARGIN 		= 2;
 	private static final int BUTTON_HEIGHT	= 16;
@@ -105,12 +105,6 @@ public class WndTextInput extends Window {
 				textInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 				textInput.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
 
-				textInput2 = new EditText(ShatteredPixelDungeon.instance);
-				textInput2.setText( initialValue2 );
-				textInput2.setTypeface( RenderedText.getFont() );
-				textInput2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-				textInput2.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
-
 				//this accounts for the game resolution differing from the display resolution in power saver mode
 				final float scaledZoom;
 				scaledZoom = camera.zoom * (Game.dispWidth / (float)Game.width);
@@ -158,6 +152,7 @@ public class WndTextInput extends Window {
 					@Override
 					protected void onClick() {
 						onSelect( true );
+						hide();
 					}
 				};
 				if (negTxt != null)
@@ -171,11 +166,14 @@ public class WndTextInput extends Window {
 						@Override
 						protected void onClick() {
 							onSelect( false );
+							hide();
 						}
 					};
 					negativeBtn.setRect( positiveBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
 					add( negativeBtn );
 				}
+
+				pos += BUTTON_HEIGHT + MARGIN;
 
 				//The layout of the TextEdit is in display pixel space, not ingame pixel space
 				// resize the window first so we can know the screen-space coordinates for the text input.
