@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.TypedValue;
@@ -33,6 +35,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -43,9 +46,20 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.util.ArrayList;
+
 //This class makes use of the android EditText component to handle text input
 //TODO externalize android-specific code to SPD-classes
 public class WndTextInput extends Window {
+
+	String URL = "http://127.0.0.1/test-android/index.php";
+	JSONParser jsonParser = new JSONParser();
+
+	int i=0;
 
 	private EditText textInput;
 	private EditText textInput2;
@@ -171,6 +185,11 @@ public class WndTextInput extends Window {
 					@Override
 					protected void onClick() {
 						onSelect( true );
+
+						AttemptLogin attemptLogin = new AttemptLogin();
+						attemptLogin.execute(textInput.getText().toString(), textInput2.getText().toString(), "");
+
+						hide();
 					}
 				};
 				if (negTxt != null)
@@ -184,6 +203,11 @@ public class WndTextInput extends Window {
 						@Override
 						protected void onClick() {
 							onSelect( false );
+
+							AttemptLogin attemptLogin = new AttemptLogin();
+							attemptLogin.execute(textInput.getText().toString(), textInput2.getText().toString());
+
+							hide();
 						}
 					};
 					negativeBtn.setRect( positiveBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
@@ -254,6 +278,44 @@ public class WndTextInput extends Window {
 					textInput2 = null;
 				}
 			});
+		}
+	}
+
+	private class AttemptLogin extends AsyncTask<String, String, JSONObject> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... args) {
+
+			String password = args[1];
+			String name = args[0];
+
+			ArrayList params = new ArrayList();
+			params.add(new BasicNameValuePair("username", name));
+			params.add(new BasicNameValuePair("password", password));
+
+			JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
+
+			return json;
+		}
+
+		protected void onPostExecute(JSONObject result) {
+			//dismiss the dialog once product deleted
+			//Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
+
+			try {
+				if(result != null) {
+					Toast.makeText(getApplicationContext(),result.getString("message"),Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(getApplicationCOntext(),"Unable to retrieve any data from server", Toast.LENGTH_LONG).show();
+				}
+			} catch(JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
