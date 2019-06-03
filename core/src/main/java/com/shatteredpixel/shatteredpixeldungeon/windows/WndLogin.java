@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import android.widget.EditText;
+
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -17,16 +19,17 @@ public class WndLogin extends Window {
 
         super();
 
-        RenderedTextMultiline form1 = PixelScene.renderMultiline( 6 );
-        RenderedTextMultiline form2 = PixelScene.renderMultiline( 6 );
+//        RenderedTextMultiline form1 = PixelScene.renderMultiline( 6 );
+//        RenderedTextMultiline form2 = PixelScene.renderMultiline( 6 );
 
-        form1.text( Messages.get(this, "id"), WIDTH );
-        form1.setPos(1, 1);
-        add( form1 );
+//        form1.text( Messages.get(this, "id"), WIDTH );
+//        form1.setPos(1, 1);
+//        add( form1 );
+//
+//        form2.text( Messages.get(this, "pwd"), WIDTH );
+//        form2.setPos(1, 29);
+//        add( form2 );
 
-        form2.text( Messages.get(this, "pwd"), WIDTH );
-        form2.setPos(1, 29);
-        add( form2 );
 
         RedButton btnSignIn = new RedButton( Messages.get(this, "sign_in"));
         btnSignIn.setSize(WIDTH/2-GAP, BTN_HEIGHT);

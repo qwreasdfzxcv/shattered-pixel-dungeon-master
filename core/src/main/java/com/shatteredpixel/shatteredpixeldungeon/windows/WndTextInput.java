@@ -48,8 +48,10 @@ import com.watabou.noosa.RenderedText;
 public class WndTextInput extends Window {
 
 	private EditText textInput;
+	private EditText textInput2;
 
 	private static final int WIDTH 			= 120;
+	private static final int HEIGHT			= 86;
 	private static final int W_LAND_MULTI 	= 200; //in the specific case of multiline in landscape
 	private static final int MARGIN 		= 2;
 	private static final int BUTTON_HEIGHT	= 16;
@@ -58,11 +60,11 @@ public class WndTextInput extends Window {
 	private static final int MAX_LEN_SINGLE = 20;
 	private static final int MAX_LEN_MULTI 	= 2000;
 
-	public WndTextInput( String title, String initialValue, boolean multiLine, String posTxt, String negTxt){
-		this( title, initialValue, multiLine ? MAX_LEN_MULTI : MAX_LEN_SINGLE, multiLine, posTxt, negTxt);
+	public WndTextInput( String title1, String title2, String initialValue1, String initialValue2, boolean multiLine, String posTxt, String negTxt){
+		this( title1, title2, initialValue1, initialValue2, multiLine ? MAX_LEN_MULTI : MAX_LEN_SINGLE, multiLine, posTxt, negTxt);
 	}
 
-	public WndTextInput(final String title, final String initialValue, final int maxLength,
+	public WndTextInput(final String title1, final String title2, final String initialValue1, final String initialValue2, final int maxLength,
 	                    final boolean multiLine, final String posTxt, final String negTxt){
 		super();
 
@@ -83,19 +85,31 @@ public class WndTextInput extends Window {
 		ShatteredPixelDungeon.instance.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				RenderedTextMultiline txtTitle = PixelScene.renderMultiline( title, 9 );
-				txtTitle.maxWidth( width );
-				txtTitle.hardlight( Window.TITLE_COLOR );
-				txtTitle.setPos( (width - txtTitle.width()) /2, 0);
-				add(txtTitle);
+				RenderedTextMultiline txtTitle1 = PixelScene.renderMultiline( title1, 9 );
+				txtTitle1.maxWidth( width );
+				txtTitle1.hardlight( Window.TITLE_COLOR );
+				txtTitle1.setPos( 1, 0);
+				add(txtTitle1);
 
-				float pos = txtTitle.bottom() + MARGIN;
+				RenderedTextMultiline txtTitle2 = PixelScene.renderMultiline( title2, 9 );
+				txtTitle2.maxWidth( width );
+				txtTitle2.hardlight( Window.TITLE_COLOR );
+				txtTitle2.setPos( 1, 31);
+				add(txtTitle2);
+
+				float pos = txtTitle2.bottom() + MARGIN;
 
 				textInput = new EditText(ShatteredPixelDungeon.instance);
-				textInput.setText( initialValue );
+				textInput.setText( initialValue1 );
 				textInput.setTypeface( RenderedText.getFont() );
 				textInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 				textInput.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
+
+				textInput2 = new EditText(ShatteredPixelDungeon.instance);
+				textInput2.setText( initialValue2 );
+				textInput2.setTypeface( RenderedText.getFont() );
+				textInput2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+				textInput2.setInputType( InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES );
 
 				//this accounts for the game resolution differing from the display resolution in power saver mode
 				final float scaledZoom;
@@ -144,7 +158,6 @@ public class WndTextInput extends Window {
 					@Override
 					protected void onClick() {
 						onSelect( true );
-						hide();
 					}
 				};
 				if (negTxt != null)
@@ -158,19 +171,16 @@ public class WndTextInput extends Window {
 						@Override
 						protected void onClick() {
 							onSelect( false );
-							hide();
 						}
 					};
 					negativeBtn.setRect( positiveBtn.right() + MARGIN, pos, (width - MARGIN * 3) / 2, BUTTON_HEIGHT );
 					add( negativeBtn );
 				}
 
-				pos += BUTTON_HEIGHT + MARGIN;
-
 				//The layout of the TextEdit is in display pixel space, not ingame pixel space
 				// resize the window first so we can know the screen-space coordinates for the text input.
-				resize( width, (int)pos );
-				final int inputTop = (int)(camera.cameraToScreen(0, txtTitle.bottom() + MARGIN).y * (Game.dispWidth / (float)Game.width));
+				resize( width, HEIGHT );
+				final int inputTop = (int)(camera.cameraToScreen(0, txtTitle1.bottom() + MARGIN).y * (Game.dispWidth / (float)Game.width));
 
 				//The text input exists in a separate view ontop of the normal game view.
 				// It visually appears to be a part of the game window but is infact a separate

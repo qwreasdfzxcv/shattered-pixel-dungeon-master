@@ -31,6 +31,11 @@ android {
 
 dependencies {
     implementation project(':SPD-classes')
+    implementation 'io.socket:engine.io-client:1.0.0'
+    implementation 'io.socket:socket.io-client:1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+
     repositories {
         google()
         jcenter()

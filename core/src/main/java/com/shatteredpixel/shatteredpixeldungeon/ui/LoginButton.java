@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndLogin;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
@@ -43,6 +44,7 @@ public class LoginButton extends Button {
 
     @Override
     protected void onClick(){
-        parent.add(new WndLogin());
+        WndTextInput form = new WndTextInput( "id", "password", "", "", false, "로그인", "가입");
+        add(form);
     }
 }
