@@ -45,7 +45,8 @@ public class LoginButton extends Button {
 
     @Override
     protected void onClick(){
-        WndTextInput form = new WndTextInput( "id", "password", "", "", false, "로그인", "가입");
-        add(form);
+        //WndTextInput form = new WndTextInput( "id", "password", "", "", false, "로그인", "가입");
+        //add(form);
+         DeviceCompat.openURI("http://192.168.159.1/insert2.php");
     }
 }
