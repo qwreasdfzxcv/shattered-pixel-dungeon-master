@@ -879,7 +879,7 @@ public class GameScene extends PixelScene {
 		gameOver.show( 0x000000, 1f );
 		scene.showBanner( gameOver );
 
-		GameScene.show( new WndUploadScore());
+//		GameScene.show( new WndUploadScore());
 		
 		Sample.INSTANCE.play( Assets.SND_DEATH );
 	}

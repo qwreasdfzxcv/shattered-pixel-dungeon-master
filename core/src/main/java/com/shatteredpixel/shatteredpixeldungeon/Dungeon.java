@@ -745,7 +745,7 @@ public class Dungeon {
 			Badges.validateChampion(chCount);
 		}
 
-		GameScene.show( new WndUploadScore());
+//		GameScene.show( new WndUploadScore());
 
 		Rankings.INSTANCE.submit( true, cause );
 	}

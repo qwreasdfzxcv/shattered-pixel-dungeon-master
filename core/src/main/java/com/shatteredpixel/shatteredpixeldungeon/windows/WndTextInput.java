@@ -206,24 +206,22 @@ public class WndTextInput extends Window {
 						protected void onClick() {
 							onSelect(false);
 
-							String url = "http://127.0.0.1/test-android/index.php";
+							String id = textInput.getText().toString();
+							String pwd = textInput2.getText().toString();
+
+							String url = "http://127.0.0.1:80/test-android/index.php";
 
 							try {
 								OkHttpClient client = new OkHttpClient();
-								RequestBody body = new FormBody.Builder().add("username", textInput.getText().toString()).build();
-								RequestBody body2 = new FormBody.Builder().add("password", textInput2.getText().toString()).build();
+								RequestBody body = new FormBody.Builder()
+										.add("username", id)
+										.add("password", pwd)
+										.build();
 
 								Request request = new Request.Builder().url(url).post(body).build();
-								Request request2 = new Request.Builder().url(url).post(body2).build();
-
 								Response response = client.newCall(request).execute();
-								Response response2 = client.newCall(request2).execute();
-
 								ResponseBody responseBody = response.body();
-								ResponseBody responseBody2 = response2.body();
-
 								String res = responseBody.toString();
-								String res2 = responseBody2.toString();
 
 							} catch (IOException e) {
 								e.printStackTrace();
